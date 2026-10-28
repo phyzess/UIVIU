@@ -1,21 +1,51 @@
 {
   "name": "uiviu",
-  "type": "module",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@12.3.4",
-  "engines": {
-    "node": ">=24.0.0"
-  },
+  "type": "module",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify": "pnpm check && pnpm lint && pnpm format:check && pnpm test && pnpm build",
+    "postinstall": "simple-git-hooks"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.4.2",
     "tailwindcss": "^4.3.3"
-  }
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "lint-staged": "^17.6.0",
+    "oxfmt": "^0.75.0",
+    "oxlint": "^1.90.0",
+    "simple-git-hooks": "^2.14.0",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.5"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,mjs,cjs,ts,mts,cts,json,jsonc,css,md,yaml,yml}": [
+      "oxlint --fix",
+      "oxfmt --write"
+    ],
+    "*.astro": [
+      "oxfmt --write"
+    ]
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "packageManager": "pnpm@12.3.4"
 }

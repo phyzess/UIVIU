@@ -1,5 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  BRAND_HEADLINE_EN,
+  BRAND_SUBTITLE_ZH,
+  CONTENT_DIRECTIONS_LABEL,
+  CONTENT_INTRO_ZH,
+  SITE_NAME,
+} from "../lib/site";
 ---
 
 <BaseLayout>
@@ -10,26 +17,21 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           id="brand-name"
           class="font-display text-6xl leading-none tracking-[0.14em] md:text-7xl"
         >
-          UIVIU
+          {SITE_NAME}
         </h1>
-        <p
-          class="mt-10 max-w-[18rem] border-t border-rule pt-5 font-mono text-[0.7rem] leading-relaxed tracking-[0.22em] text-ink-soft uppercase"
-        >
-          LIFE · THOUGHTS · CODE
+        <p class="mt-10 max-w-[18rem] border-t border-rule pt-5 font-mono text-[0.7rem] leading-relaxed tracking-[0.22em] text-ink-soft uppercase">
+          {CONTENT_DIRECTIONS_LABEL}
         </p>
       </div>
 
       <div class="max-w-[34rem]">
         <p class="font-display text-2xl leading-snug md:text-[1.75rem]">
-          A Rigorous Derivation of Something Entirely Useless, Yet Perfectly
-          Symmetrical.
+          {BRAND_HEADLINE_EN}
         </p>
         <p class="mt-8 border-t border-rule pt-8 text-lg leading-relaxed md:text-xl">
-          经过严谨的非严谨推导，最终得到一个没有实际用途，但看起来很对称的结果。
+          {BRAND_SUBTITLE_ZH}
         </p>
-        <p class="mt-6 text-base leading-relaxed text-ink-soft">
-          关于代码、生活、思考，以及一些本来不必想那么多的事情。
-        </p>
+        <p class="mt-6 text-base leading-relaxed text-ink-soft">{CONTENT_INTRO_ZH}</p>
       </div>
     </div>
   </section>

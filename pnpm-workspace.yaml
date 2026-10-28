@@ -10,3 +10,10 @@
 fetchTimeout: 1800000
 fetchRetries: 5
 fetchRetryMaxtimeout: 600000
+
+# pnpm 12 blocks dependency lifecycle scripts by default (strictDepBuilds) and
+# reports ERR_PNPM_IGNORED_BUILDS. simple-git-hooks needs its install script to
+# register the git hooks; allow that one package explicitly.
+# https://pnpm.io/settings/build#allowbuilds
+allowBuilds:
+  simple-git-hooks: true
