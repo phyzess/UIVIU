@@ -45,10 +45,11 @@ pnpm dev        # http://localhost:4321
 
 ```text
 src/
-  components/   SiteHeader, SiteFooter
-  layouts/      BaseLayout — document head, chrome, skip link
+  components/   SiteHeader (nav), SiteFooter, PostCard, TableOfContents, ReadingProgress
+  content/      posts/*.md
+  layouts/      BaseLayout, PostLayout
   lib/          site.ts — brand copy in one place
-  pages/        index.astro, 404.astro
+  pages/        index, archive, about, 404, posts/[...slug]
   styles/       global.css — Tailwind import and @theme tokens
 tests/unit/     Vitest unit tests
 docs/agents/    Notes for AI agents: design, content, workflow

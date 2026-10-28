@@ -4,6 +4,7 @@ import {
   filterPublished,
   formatPostDate,
   formatPostDateLong,
+  groupPostsByYearMonth,
   isPublished,
   sortByPubDateDesc,
   type PostListEntry,
@@ -80,5 +81,55 @@ describe("date formatting", () => {
     expect(formatPostDateLong(new Date("2026-03-05T00:00:00Z"))).toBe(
       "2026 年 3 月 5 日",
     );
+  });
+});
+
+describe("groupPostsByYearMonth", () => {
+  it("returns no groups for an empty list", () => {
+    expect(groupPostsByYearMonth([])).toEqual([]);
+  });
+
+  it("groups by year and month, newest first", () => {
+    const posts = sortByPubDateDesc([
+      post("jan-2026", "2026-01-15"),
+      post("oct-2026", "2026-10-28"),
+      post("sep-2026", "2026-09-03"),
+      post("dec-2025", "2025-12-31"),
+    ]);
+
+    const groups = groupPostsByYearMonth(posts);
+
+    expect(groups.map((g) => g.year)).toEqual([2026, 2025]);
+    expect(groups[0]?.months.map((m) => m.key)).toEqual([
+      "2026-10",
+      "2026-09",
+      "2026-01",
+    ]);
+    expect(groups[1]?.months.map((m) => m.key)).toEqual(["2025-12"]);
+    expect(groups[0]?.months[0]?.posts.map((p) => p.id)).toEqual(["oct-2026"]);
+  });
+
+  it("keeps several posts in the same month together in order", () => {
+    const posts = sortByPubDateDesc([
+      post("first-oct", "2026-10-01"),
+      post("second-oct", "2026-10-28"),
+      post("third-oct", "2026-10-10"),
+    ]);
+
+    const groups = groupPostsByYearMonth(posts);
+
+    expect(groups).toHaveLength(1);
+    expect(groups[0]?.months).toHaveLength(1);
+    expect(groups[0]?.months[0]?.posts.map((p) => p.id)).toEqual([
+      "second-oct",
+      "third-oct",
+      "first-oct",
+    ]);
+  });
+
+  it("does not mutate the input", () => {
+    const posts = [post("a", "2026-10-01")];
+    groupPostsByYearMonth(posts);
+    expect(posts).toHaveLength(1);
   });
 });

@@ -47,3 +47,55 @@ export function formatPostDate(date: Date): string {
 export function formatPostDateLong(date: Date): string {
   return `${date.getUTCFullYear()} 年 ${date.getUTCMonth() + 1} 月 ${date.getUTCDate()} 日`;
 }
+
+export interface PostMonthGroup<T extends PostListEntry> {
+  /** `YYYY-MM`, stable sort key and DOM id. */
+  key: string;
+  year: number;
+  /** 1-12. */
+  month: number;
+  posts: T[];
+}
+
+export interface PostYearGroup<T extends PostListEntry> {
+  year: number;
+  months: PostMonthGroup<T>[];
+}
+
+/**
+ * Groups posts by year and month, preserving the incoming order inside a group.
+ *
+ * Callers pass a newest-first list, so groups come out newest-first too. Years
+ * and months are read in UTC for the same reason as `formatPostDate`.
+ */
+export function groupPostsByYearMonth<T extends PostListEntry>(
+  posts: readonly T[],
+): PostYearGroup<T>[] {
+  const years: PostYearGroup<T>[] = [];
+
+  for (const post of posts) {
+    const year = post.data.pubDate.getUTCFullYear();
+    const month = post.data.pubDate.getUTCMonth() + 1;
+
+    let yearGroup = years.at(-1);
+    if (!yearGroup || yearGroup.year !== year) {
+      yearGroup = { year, months: [] };
+      years.push(yearGroup);
+    }
+
+    let monthGroup = yearGroup.months.at(-1);
+    if (!monthGroup || monthGroup.month !== month) {
+      monthGroup = {
+        key: `${year}-${String(month).padStart(2, "0")}`,
+        year,
+        month,
+        posts: [],
+      };
+      yearGroup.months.push(monthGroup);
+    }
+
+    monthGroup.posts.push(post);
+  }
+
+  return years;
+}

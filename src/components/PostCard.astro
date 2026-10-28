@@ -4,9 +4,11 @@ import { formatPostDate } from "../lib/post-utils";
 
 interface Props {
   post: Post;
+  /** Archive rows: date and title only, no description or tags. */
+  compact?: boolean;
 }
 
-const { post } = Astro.props;
+const { post, compact = false } = Astro.props;
 const { title, description, pubDate, tags } = post.data;
 const published = formatPostDate(pubDate);
 ---
@@ -14,7 +16,7 @@ const published = formatPostDate(pubDate);
 <li class="border-t border-rule">
   <a
     href={postPath(post)}
-    class="group flex flex-col gap-2 py-6 no-underline md:flex-row md:items-baseline md:gap-8"
+    class="group flex flex-col gap-2 py-5 no-underline md:flex-row md:items-baseline md:gap-8"
   >
     <time
       datetime={published}
@@ -23,12 +25,16 @@ const published = formatPostDate(pubDate);
       {published}
     </time>
     <span class="min-w-0 flex-1">
-      <span class="block font-display text-xl leading-snug text-ink decoration-signal decoration-1 underline-offset-4 group-hover:underline">
+      <span class="block font-display text-xl leading-snug text-ink decoration-signal decoration-1 underline-offset-4 group-hover:underline [overflow-wrap:anywhere]">
         {title}
       </span>
-      <span class="mt-1 block text-sm leading-relaxed text-ink-soft">{description}</span>
+      {!compact && (
+        <span class="mt-1 block text-sm leading-relaxed text-ink-soft">
+          {description}
+        </span>
+      )}
     </span>
-    {tags.length > 0 && (
+    {!compact && tags.length > 0 && (
       <span class="flex flex-wrap gap-2 font-mono text-[0.65rem] tracking-[0.18em] text-ink-soft uppercase md:w-40 md:justify-end">
         {tags.map((tag) => (
           <span>{tag}</span>

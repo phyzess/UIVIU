@@ -25,7 +25,7 @@ const entries = headings.filter((heading) => heading.depth === 2 || heading.dept
         <li class={heading.depth === 3 ? "pl-6" : "pl-4"}>
           <a
             href={`#${heading.slug}`}
-            class="block border-l border-transparent py-0.5 pl-2 text-ink-soft no-underline hover:border-signal hover:text-ink"
+            class="block border-l border-transparent py-0.5 pl-2 text-ink-soft no-underline [overflow-wrap:anywhere] hover:border-signal hover:text-ink"
           >
             {heading.text}
           </a>

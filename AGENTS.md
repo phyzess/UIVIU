@@ -50,11 +50,13 @@ If copy does not fit, change the layout, measure or spacing — never the copy.
 
 ```text
 src/
-  components/   SiteHeader, SiteFooter, PostCard, TableOfContents, ReadingProgress
+  components/   SiteHeader (wordmark + nav), SiteFooter, PostCard,
+                TableOfContents, ReadingProgress
   content/      posts/*.md — Markdown posts with frontmatter
   layouts/      BaseLayout (head, chrome, skip link), PostLayout (article, TOC)
   lib/          site.ts (brand copy), posts.ts (queries), post-utils.ts, reading-progress.ts
-  pages/        index.astro, 404.astro, posts/[...slug].astro
+  pages/        index.astro, archive.astro, about.astro, 404.astro,
+                posts/[...slug].astro
   styles/       global.css — Tailwind import, @theme tokens, .post-body typography
   content.config.ts — posts collection schema
 tests/unit/     Vitest unit tests
@@ -90,7 +92,7 @@ deleted at the end of the project):
 | 1     | Astro skeleton, Tailwind, brand homepage, 404           | done    |
 | 2     | Tooling baseline: check, lint, format, test, hooks, CI  | done    |
 | 3     | Content collections, post routes, TOC, reading progress | done    |
-| 4     | Homepage, archive, about, responsive polish             | pending |
+| 4     | Homepage, archive, about, responsive polish             | done    |
 | 5     | Pagefind search, RSS, sitemap, canonical/OG             | pending |
 | 6     | Cloudflare Workers static assets config and docs        | pending |
 | 7     | Final QA and delivery                                   | pending |

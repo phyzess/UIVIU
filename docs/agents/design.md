@@ -65,6 +65,12 @@ measure, wrapping or spacing instead.
 
 ## Known gaps
 
-- `public/favicon.svg` and `public/favicon.ico` are still the Astro starter icons;
-  replace them when the mark is designed (phase 4).
-- No webfont yet (see above).
+- No webfont yet (see above); the serif stack falls back to system faces.
+
+## Overflow rules
+
+Long unbroken strings (titles, tags, heading text) must wrap instead of widening
+the page. `PostCard`, the post `h1`, the table of contents and `.post-body`
+headings carry `overflow-wrap: anywhere`; grid children around the article body
+carry `min-w-0` so a wide code block scrolls inside its own box. Check any new
+text container at 320px before merging.

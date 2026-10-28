@@ -1,20 +1,45 @@
 ---
-import { CORE_CONCEPT_ZH, SITE_NAME } from "../lib/site";
+import { SITE_NAME } from "../lib/site";
 
-// Navigation is intentionally limited to routes that exist in this phase.
-// Archive, search and about links are added together with their pages.
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+
+const navItems = [
+  { href: "/", label: "首页" },
+  { href: "/archive/", label: "归档" },
+  { href: "/about/", label: "关于" },
+] as const;
+
+const isActive = (href: string) => path === (href.replace(/\/+$/, "") || "/");
 ---
 
 <header class="border-b border-rule">
-  <div class="mx-auto flex w-full max-w-5xl items-baseline justify-between px-6 py-6 md:px-10">
+  <div class="mx-auto flex w-full max-w-5xl flex-wrap items-baseline justify-between gap-x-8 gap-y-4 px-6 py-6 md:px-10">
     <a
       href="/"
       class="font-display text-xl leading-none tracking-[0.28em] text-ink no-underline"
     >
       {SITE_NAME}
     </a>
-    <p class="font-mono text-[0.65rem] tracking-[0.22em] text-ink-soft uppercase">
-      {CORE_CONCEPT_ZH}
-    </p>
+
+    <nav aria-label="主导航">
+      <ul class="flex items-center gap-5 text-sm text-ink-soft">
+        {navItems.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              aria-current={isActive(item.href) ? "page" : undefined}
+              class:list={[
+                "no-underline",
+                isActive(item.href)
+                  ? "text-ink underline decoration-signal decoration-1 underline-offset-4"
+                  : "hover:text-ink hover:underline hover:decoration-rule hover:underline-offset-4",
+              ]}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
   </div>
 </header>
