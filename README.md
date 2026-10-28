@@ -59,9 +59,25 @@ strings are requirements, not placeholders.
 
 ## Writing posts
 
-Posts arrive with the content collection (phase 3). The agreed format —
-frontmatter fields, draft handling, slugs, images — is documented in
-[`docs/agents/content.md`](docs/agents/content.md).
+A post is one Markdown file in `src/content/posts/`; the file name becomes the
+slug, so `/posts/about-this-site/` comes from `about-this-site.md`.
+
+```yaml
+---
+title: "这个站点如何工作"
+description: "一句话说明这篇文章在讲什么。"
+pubDate: 2026-10-28
+updatedDate: null
+tags:
+  - meta
+draft: false
+---
+```
+
+`title`, `description`, `pubDate`, `tags` and `draft` are required and validated
+at build time. `draft` must be written explicitly: drafts never appear in
+listings or generate pages, not even in `astro dev`. The full contract, including
+slug and image rules, is in [`docs/agents/content.md`](docs/agents/content.md).
 
 ## Deployment
 

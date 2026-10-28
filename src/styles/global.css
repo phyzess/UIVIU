@@ -61,3 +61,128 @@
     }
   }
 }
+
+/*
+  Article typography. Written by hand instead of adding @tailwindcss/typography:
+  the site needs five tokens and a handful of elements, not another plugin.
+*/
+@layer components {
+  .post-body {
+    font-size: 1.0625rem;
+    line-height: 1.85;
+  }
+
+  .post-body :where(p, ul, ol, blockquote, table, pre, figure, hr) {
+    margin-block: 1.35em;
+  }
+
+  .post-body :where(h2, h3, h4) {
+    font-family: var(--font-display);
+    line-height: 1.25;
+    scroll-margin-top: 5rem;
+  }
+
+  .post-body :where(h2) {
+    margin-block: 2.4em 0.9em;
+    font-size: 1.6em;
+  }
+
+  .post-body :where(h3) {
+    margin-block: 2em 0.7em;
+    font-size: 1.25em;
+  }
+
+  .post-body :where(h4) {
+    margin-block: 1.6em 0.6em;
+    font-size: 1.05em;
+  }
+
+  .post-body :where(ul) {
+    padding-inline-start: 1.4em;
+    list-style: disc;
+  }
+
+  .post-body :where(ol) {
+    padding-inline-start: 1.4em;
+    list-style: decimal;
+  }
+
+  .post-body :where(li) {
+    margin-block: 0.4em;
+  }
+
+  .post-body :where(li > ul, li > ol) {
+    margin-block: 0.4em;
+  }
+
+  .post-body :where(a) {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-signal);
+    text-underline-offset: 0.22em;
+  }
+
+  .post-body :where(a:hover) {
+    text-decoration-thickness: 2px;
+  }
+
+  .post-body :where(blockquote) {
+    border-inline-start: 2px solid var(--color-rule);
+    padding-inline-start: 1.1em;
+    color: var(--color-ink-soft);
+  }
+
+  .post-body :where(code):not(pre code) {
+    padding: 0.15em 0.35em;
+    background-color: color-mix(in srgb, var(--color-rule) 45%, transparent);
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+
+  .post-body :where(pre) {
+    overflow-x: auto;
+    padding: 1em 1.15em;
+    border: 1px solid var(--color-rule);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+
+  .post-body :where(pre code) {
+    font-family: var(--font-mono);
+  }
+
+  .post-body :where(table) {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: 0.95em;
+  }
+
+  .post-body :where(th, td) {
+    padding: 0.6em 0.75em;
+    border-bottom: 1px solid var(--color-rule);
+    text-align: start;
+  }
+
+  .post-body :where(thead th) {
+    font-family: var(--font-mono);
+    font-size: 0.75em;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+  }
+
+  .post-body :where(img) {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--color-rule);
+  }
+
+  .post-body :where(hr) {
+    border: 0;
+    border-top: 1px solid var(--color-rule);
+  }
+}

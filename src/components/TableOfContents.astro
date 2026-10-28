@@ -1,0 +1,36 @@
+---
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+
+// Only sections and subsections are useful in a table of contents; the title is
+// the page `h1` and deeper headings are noise.
+const entries = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+{entries.length > 0 && (
+  <nav aria-labelledby="toc-heading" class="mt-12 md:mt-0">
+    <h2
+      id="toc-heading"
+      class="font-mono text-[0.65rem] tracking-[0.22em] text-ink-soft uppercase"
+    >
+      目录
+    </h2>
+    <ol class="mt-4 space-y-2 border-l border-rule text-sm leading-relaxed">
+      {entries.map((heading) => (
+        <li class={heading.depth === 3 ? "pl-6" : "pl-4"}>
+          <a
+            href={`#${heading.slug}`}
+            class="block border-l border-transparent py-0.5 pl-2 text-ink-soft no-underline hover:border-signal hover:text-ink"
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}

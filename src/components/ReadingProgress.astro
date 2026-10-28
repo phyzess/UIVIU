@@ -1,0 +1,44 @@
+---
+/**
+ * Reading progress for the current article.
+ *
+ * The bar reflects the real scroll position of `[data-post-body]`, not a timed
+ * animation. It is purely visual, so it is hidden from assistive technology.
+ */
+---
+
+<div class="fixed inset-x-0 top-0 z-20 h-0.5 bg-transparent" aria-hidden="true">
+  <div data-reading-progress class="h-full origin-left scale-x-0 bg-signal"></div>
+</div>
+
+<script>
+  import { computeReadingProgress } from "../lib/reading-progress";
+
+  const bar = document.querySelector<HTMLElement>("[data-reading-progress]");
+  const body = document.querySelector<HTMLElement>("[data-post-body]");
+
+  if (bar && body) {
+    let frame = 0;
+
+    const paint = () => {
+      frame = 0;
+      const rect = body.getBoundingClientRect();
+      const progress = computeReadingProgress({
+        top: rect.top,
+        height: rect.height,
+        viewport: window.innerHeight,
+      });
+      bar.style.transform = `scaleX(${progress})`;
+    };
+
+    const schedule = () => {
+      if (frame === 0) {
+        frame = window.requestAnimationFrame(paint);
+      }
+    };
+
+    paint();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+  }
+</script>

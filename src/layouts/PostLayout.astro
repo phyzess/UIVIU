@@ -1,0 +1,59 @@
+---
+import type { MarkdownHeading } from "astro";
+
+import ReadingProgress from "../components/ReadingProgress.astro";
+import TableOfContents from "../components/TableOfContents.astro";
+import { type Post } from "../lib/posts";
+import { formatPostDate, formatPostDateLong } from "../lib/post-utils";
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  post: Post;
+  headings: MarkdownHeading[];
+}
+
+const { post, headings } = Astro.props;
+const { title, description, pubDate, updatedDate, tags } = post.data;
+const published = formatPostDate(pubDate);
+const updated = updatedDate ? formatPostDate(updatedDate) : null;
+---
+
+<BaseLayout title={title} description={description}>
+  <ReadingProgress />
+
+  <article class="py-14 md:py-20">
+    <header class="max-w-[42rem]">
+      <p class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[0.7rem] tracking-[0.2em] text-ink-soft uppercase">
+        <time datetime={published}>{formatPostDateLong(pubDate)}</time>
+        {updated && <span aria-hidden="true">·</span>}
+        {updated && <span>更新于 {updated}</span>}
+      </p>
+
+      <h1 class="mt-6 font-display text-4xl leading-tight text-balance md:text-5xl">
+        {title}
+      </h1>
+
+      <p class="mt-5 text-base leading-relaxed text-ink-soft">{description}</p>
+
+      {tags.length > 0 && (
+        <ul
+          class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.65rem] tracking-[0.18em] text-ink-soft uppercase"
+          aria-label="标签"
+        >
+          {tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      )}
+    </header>
+
+    <div class="mt-12 grid gap-12 border-t border-rule pt-10 md:grid-cols-[minmax(0,1fr)_14rem] md:gap-16">
+      <div class="post-body max-w-[42rem]" data-post-body>
+        <slot />
+      </div>
+      <aside class="md:sticky md:top-10 md:self-start" aria-label="文章目录">
+        <TableOfContents headings={headings} />
+      </aside>
+    </div>
+  </article>
+</BaseLayout>

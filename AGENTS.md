@@ -14,7 +14,8 @@ site with editorial typography and a small amount of dry humour. It is not a
 SaaS, CMS or documentation platform.
 
 Stack: Astro 7 (static output) · TypeScript strict · Tailwind CSS 4 (Vite plugin)
-· Astro Content Collections · Pagefind · Vitest · Oxlint · Oxfmt.
+· Astro Content Collections · Shiki · Vitest · Oxlint · Oxfmt. Pagefind, RSS and
+the sitemap are added in later phases.
 
 ## Brand assets — do not edit, shorten or swap
 
@@ -49,11 +50,13 @@ If copy does not fit, change the layout, measure or spacing — never the copy.
 
 ```text
 src/
-  components/   SiteHeader, SiteFooter (PostCard, PostMeta, … arrive with content)
-  layouts/      BaseLayout (head, chrome, skip link)
-  lib/          site.ts — brand copy and site-wide strings
-  pages/        index.astro, 404.astro (archive, search, posts arrive later)
-  styles/       global.css — Tailwind import + @theme tokens
+  components/   SiteHeader, SiteFooter, PostCard, TableOfContents, ReadingProgress
+  content/      posts/*.md — Markdown posts with frontmatter
+  layouts/      BaseLayout (head, chrome, skip link), PostLayout (article, TOC)
+  lib/          site.ts (brand copy), posts.ts (queries), post-utils.ts, reading-progress.ts
+  pages/        index.astro, 404.astro, posts/[...slug].astro
+  styles/       global.css — Tailwind import, @theme tokens, .post-body typography
+  content.config.ts — posts collection schema
 tests/unit/     Vitest unit tests
 docs/agents/    Agent-facing documentation
 ```
@@ -86,7 +89,7 @@ deleted at the end of the project):
 | 0     | Environment check                                       | done    |
 | 1     | Astro skeleton, Tailwind, brand homepage, 404           | done    |
 | 2     | Tooling baseline: check, lint, format, test, hooks, CI  | done    |
-| 3     | Content collections, post routes, TOC, reading progress | pending |
+| 3     | Content collections, post routes, TOC, reading progress | done    |
 | 4     | Homepage, archive, about, responsive polish             | pending |
 | 5     | Pagefind search, RSS, sitemap, canonical/OG             | pending |
 | 6     | Cloudflare Workers static assets config and docs        | pending |

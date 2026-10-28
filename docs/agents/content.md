@@ -1,7 +1,8 @@
 # Content rules
 
-Status: the content collection lands in phase 3. Until then this file is the
-agreed contract; `src/content.config.ts` will enforce it with Zod.
+The collection is defined in `src/content.config.ts` and queried through
+`src/lib/posts.ts`. `getPublishedPosts()` is the only entry point pages use; it
+sorts newest first and drops drafts.
 
 ## Where posts live
 
@@ -48,6 +49,10 @@ being called.
 A draft is not a privacy boundary. Anything in this repository is treated as
 public: private journals and sensitive notes belong in a private repository, not
 in a `draft: true` file here.
+
+Drafts are hidden in `astro dev` as well, so there is intentionally no preview
+flag. To look at a draft, flip its `draft` value locally and revert it before
+committing; that keeps a single code path for production and development.
 
 ## Writing standard
 
