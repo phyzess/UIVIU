@@ -1,0 +1,12 @@
+# pnpm 12 reads almost all settings from this file instead of `.npmrc`
+# (`.npmrc` only contributes auth, registry, TLS, proxy and local-address).
+# Source: https://pnpm.io/settings
+#
+# Why the timeout override: this machine reaches npm only through the Tencent
+# mirror, which serves large platform binaries at ~35 KB/s. With pnpm's default
+# 60s per-request timeout the download aborts mid-flight and the native optional
+# dependency is dropped without an error, which later breaks `astro` with
+# "Cannot find native binding" (@rolldown/binding-darwin-arm64).
+fetchTimeout: 1800000
+fetchRetries: 5
+fetchRetryMaxtimeout: 600000

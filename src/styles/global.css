@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/*
+  UIVIU design tokens.
+
+  Paper is the reading surface, Ink carries text, Rule draws the hairline grid.
+  Signal is an accent only: it is used for markers, underlines and interaction
+  states, never as small body text (it fails contrast at small sizes on Paper).
+  The visual rationale lives in docs/agents/design.md.
+*/
+@theme {
+  --color-paper: #f8f7f2;
+  --color-ink: #252525;
+  --color-ink-soft: #5f5c56;
+  --color-signal: #ff623d;
+  --color-rule: #d8d5cd;
+
+  --font-display:
+    "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC",
+    "Noto Serif CJK SC", "Source Han Serif SC", serif;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-mono:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    text-rendering: optimizeLegibility;
+  }
+
+  :where(a) {
+    text-underline-offset: 0.2em;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-signal) 20%, transparent);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

@@ -1,0 +1,46 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout>
+  <section class="pt-16 pb-16 md:pt-24 md:pb-20" aria-labelledby="brand-name">
+    <div class="grid gap-12 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-16">
+      <div>
+        <h1
+          id="brand-name"
+          class="font-display text-6xl leading-none tracking-[0.14em] md:text-7xl"
+        >
+          UIVIU
+        </h1>
+        <p
+          class="mt-10 max-w-[18rem] border-t border-rule pt-5 font-mono text-[0.7rem] leading-relaxed tracking-[0.22em] text-ink-soft uppercase"
+        >
+          LIFE · THOUGHTS · CODE
+        </p>
+      </div>
+
+      <div class="max-w-[34rem]">
+        <p class="font-display text-2xl leading-snug md:text-[1.75rem]">
+          A Rigorous Derivation of Something Entirely Useless, Yet Perfectly
+          Symmetrical.
+        </p>
+        <p class="mt-8 border-t border-rule pt-8 text-lg leading-relaxed md:text-xl">
+          经过严谨的非严谨推导，最终得到一个没有实际用途，但看起来很对称的结果。
+        </p>
+        <p class="mt-6 text-base leading-relaxed text-ink-soft">
+          关于代码、生活、思考，以及一些本来不必想那么多的事情。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-rule pt-10 pb-4" aria-labelledby="recent-posts">
+    <h2
+      id="recent-posts"
+      class="font-mono text-[0.7rem] tracking-[0.22em] text-ink-soft uppercase"
+    >
+      Recent
+    </h2>
+    <p class="mt-8 text-base leading-relaxed text-ink-soft">暂无文章。</p>
+  </section>
+</BaseLayout>

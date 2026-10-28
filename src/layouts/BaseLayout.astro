@@ -1,0 +1,46 @@
+---
+import "../styles/global.css";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+
+interface Props {
+  /** Page title without the site name; the site name is appended automatically. */
+  title?: string;
+  description?: string;
+}
+
+const SITE_NAME = "UIVIU";
+const DEFAULT_DESCRIPTION =
+  "关于代码、生活、思考，以及一些本来不必想那么多的事情。";
+
+const { title = SITE_NAME, description = DEFAULT_DESCRIPTION } = Astro.props;
+const documentTitle = title === SITE_NAME ? SITE_NAME : `${title} — ${SITE_NAME}`;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{documentTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body class="min-h-dvh bg-paper font-sans text-ink antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-10 focus:border focus:border-rule focus:bg-paper focus:px-3 focus:py-2 focus:font-mono focus:text-xs focus:tracking-[0.18em] focus:uppercase"
+    >
+      跳到正文
+    </a>
+    <div class="flex min-h-dvh flex-col">
+      <SiteHeader />
+      <main id="main" class="mx-auto w-full max-w-5xl flex-1 px-6 md:px-10">
+        <slot />
+      </main>
+      <SiteFooter />
+    </div>
+  </body>
+</html>
