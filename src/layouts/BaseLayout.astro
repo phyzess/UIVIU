@@ -8,10 +8,19 @@ interface Props {
   /** Page title without the site name; the site name is appended automatically. */
   title?: string;
   description?: string;
+  /** Open Graph type; posts override this with "article". */
+  ogType?: "website" | "article";
 }
 
-const { title = SITE_NAME, description = DEFAULT_DESCRIPTION } = Astro.props;
+const {
+  title = SITE_NAME,
+  description = DEFAULT_DESCRIPTION,
+  ogType = "website",
+} = Astro.props;
+
 const documentTitle = title === SITE_NAME ? SITE_NAME : `${title} — ${SITE_NAME}`;
+const canonicalPath = Astro.url.pathname;
+const canonicalUrl = Astro.site ? new URL(canonicalPath, Astro.site).href : canonicalPath;
 ---
 
 <!doctype html>
@@ -21,8 +30,25 @@ const documentTitle = title === SITE_NAME ? SITE_NAME : `${title} — ${SITE_NAM
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{documentTitle}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${SITE_NAME} RSS`}
+      href="/rss.xml"
+    />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={documentTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content="zh_CN" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={documentTitle} />
+    <meta name="twitter:description" content={description} />
   </head>
   <body class="min-h-dvh bg-paper font-sans text-ink antialiased">
     <a

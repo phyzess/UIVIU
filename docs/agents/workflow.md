@@ -34,7 +34,9 @@
 
 ```bash
 pnpm dev            # foreground dev server
-pnpm build          # astro build → dist/
+pnpm build          # astro build → dist/, then Pagefind indexes dist/
+pnpm build:astro    # Astro build only, no search index
+pnpm search:index   # Pagefind over dist/ (used by `pnpm build`)
 pnpm preview        # serve dist/
 pnpm check          # astro check
 pnpm lint           # oxlint
@@ -85,10 +87,31 @@ docs(agents): …
 Commits in this repository use `phyzess <phyzess@gmail.com>` (set locally, not
 globally).
 
+## Search
+
+Pagefind indexes `dist/` after the Astro build, so the index only exists in a
+built site — never in `astro dev`. The search page detects a missing index and
+says so instead of pretending to search. Local verification:
+
+```bash
+pnpm build          # astro build + pagefind --site dist
+pnpm preview        # serves dist/, including /pagefind/
+# open http://localhost:4321/search/?q=Markdown
+```
+
+Only the post article carries `data-pagefind-body`, so navigation, footer,
+archive, about and the table of contents are not indexed, and drafts never
+reach the index because they are never built. `dist/pagefind/` is build output
+and is not committed.
+
 ## Deployment
 
 Not configured yet (phase 6). The target is Cloudflare Workers static assets with
 `dist/` as the asset directory and `not_found_handling: "404-page"`, without an
-SSR adapter. No production deployment, DNS change or remote repository creation
-happens without explicit approval, and no domain is invented: `astro.config.mjs`
-has no `site` value yet, which RSS and the sitemap will need.
+SSR adapter.
+
+`site` in `astro.config.mjs` is a placeholder, `https://uiviu.example.com`: RSS,
+canonical URLs, Open Graph URLs, the sitemap and `public/robots.txt` all derive
+absolute URLs from it. Replace it with the production domain before deploying;
+no other file needs to change. No production deployment, DNS change or remote
+repository creation happens without explicit approval.

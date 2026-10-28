@@ -49,7 +49,7 @@ src/
   content/      posts/*.md
   layouts/      BaseLayout, PostLayout
   lib/          site.ts — brand copy in one place
-  pages/        index, archive, about, 404, posts/[...slug]
+  pages/        index, archive, search, about, 404, posts/[...slug], rss.xml
   styles/       global.css — Tailwind import and @theme tokens
 tests/unit/     Vitest unit tests
 docs/agents/    Notes for AI agents: design, content, workflow
@@ -80,12 +80,34 @@ at build time. `draft` must be written explicitly: drafts never appear in
 listings or generate pages, not even in `astro dev`. The full contract, including
 slug and image rules, is in [`docs/agents/content.md`](docs/agents/content.md).
 
+## Search, RSS and sitemap
+
+Search uses [Pagefind](https://pagefind.app) and is built after the Astro build:
+
+```bash
+pnpm build        # astro build, then pagefind --site dist
+pnpm preview      # serves dist/, including /pagefind/
+# open http://localhost:4321/search/?q=Markdown
+```
+
+The index only exists in a built site; `pnpm dev` shows an explicit "index
+unavailable" message instead of fake results. Only post articles are indexed,
+so navigation, footer and archive text stay out, and drafts never reach the
+index because they are never built. `dist/pagefind/` is build output and is not
+committed.
+
+The feed is at `/rss.xml` (linked from every page and the footer) and the
+sitemap is `/sitemap-index.xml`. Both are generated from published posts only.
+
 ## Deployment
 
 Not configured yet. The target is Cloudflare Workers static assets serving
 `dist/`, with a custom 404 page and no SSR adapter. See
-[`docs/agents/workflow.md`](docs/agents/workflow.md). No domain has been chosen,
-so `astro.config.mjs` intentionally has no `site` value yet.
+[`docs/agents/workflow.md`](docs/agents/workflow.md).
+
+`site` in `astro.config.mjs` is currently the placeholder
+`https://uiviu.example.com`. It drives RSS, canonical, Open Graph, the sitemap
+and `public/robots.txt`; replace it with the production domain before deploying.
 
 ## License
 

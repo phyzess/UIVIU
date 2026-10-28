@@ -14,8 +14,8 @@ site with editorial typography and a small amount of dry humour. It is not a
 SaaS, CMS or documentation platform.
 
 Stack: Astro 7 (static output) · TypeScript strict · Tailwind CSS 4 (Vite plugin)
-· Astro Content Collections · Shiki · Vitest · Oxlint · Oxfmt. Pagefind, RSS and
-the sitemap are added in later phases.
+· Astro Content Collections · Shiki · Pagefind · @astrojs/rss · @astrojs/sitemap
+· Vitest · Oxlint · Oxfmt.
 
 ## Brand assets — do not edit, shorten or swap
 
@@ -55,8 +55,8 @@ src/
   content/      posts/*.md — Markdown posts with frontmatter
   layouts/      BaseLayout (head, chrome, skip link), PostLayout (article, TOC)
   lib/          site.ts (brand copy), posts.ts (queries), post-utils.ts, reading-progress.ts
-  pages/        index.astro, archive.astro, about.astro, 404.astro,
-                posts/[...slug].astro
+  pages/        index, archive, search, about, 404, posts/[...slug],
+                rss.xml.ts
   styles/       global.css — Tailwind import, @theme tokens, .post-body typography
   content.config.ts — posts collection schema
 tests/unit/     Vitest unit tests
@@ -93,7 +93,7 @@ deleted at the end of the project):
 | 2     | Tooling baseline: check, lint, format, test, hooks, CI  | done    |
 | 3     | Content collections, post routes, TOC, reading progress | done    |
 | 4     | Homepage, archive, about, responsive polish             | done    |
-| 5     | Pagefind search, RSS, sitemap, canonical/OG             | pending |
+| 5     | Pagefind search, RSS, sitemap, canonical/OG             | done    |
 | 6     | Cloudflare Workers static assets config and docs        | pending |
 | 7     | Final QA and delivery                                   | pending |
 

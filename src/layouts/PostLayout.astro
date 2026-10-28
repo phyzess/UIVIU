@@ -18,10 +18,10 @@ const published = formatPostDate(pubDate);
 const updated = updatedDate ? formatPostDate(updatedDate) : null;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} ogType="article">
   <ReadingProgress />
 
-  <article class="py-14 md:py-20">
+  <article class="py-14 md:py-20" data-pagefind-body>
     <header class="max-w-[42rem]">
       <p class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[0.7rem] tracking-[0.2em] text-ink-soft uppercase">
         <time datetime={published}>{formatPostDateLong(pubDate)}</time>
@@ -51,7 +51,11 @@ const updated = updatedDate ? formatPostDate(updatedDate) : null;
       <div class="post-body min-w-0 max-w-[42rem]" data-post-body>
         <slot />
       </div>
-      <aside class="min-w-0 md:sticky md:top-10 md:self-start" aria-label="文章目录">
+      <aside
+        class="min-w-0 md:sticky md:top-10 md:self-start"
+        aria-label="文章目录"
+        data-pagefind-ignore
+      >
         <TableOfContents headings={headings} />
       </aside>
     </div>

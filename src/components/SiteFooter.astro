@@ -12,8 +12,16 @@ const year = new Date().getFullYear();
         {CORE_CONCEPT_ZH}
       </p>
     </div>
-    <p class="font-mono text-[0.65rem] tracking-[0.2em] text-ink-soft uppercase">
-      © {year}
-    </p>
+    <div class="flex items-center gap-5">
+      <a
+        href="/rss.xml"
+        class="font-mono text-[0.65rem] tracking-[0.2em] text-ink-soft uppercase underline decoration-rule underline-offset-4 hover:text-ink hover:decoration-signal"
+      >
+        RSS
+      </a>
+      <p class="font-mono text-[0.65rem] tracking-[0.2em] text-ink-soft uppercase">
+        © {year}
+      </p>
+    </div>
   </div>
 </footer>

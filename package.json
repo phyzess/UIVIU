@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build:astro": "astro build",
+    "search:index": "pagefind --site dist",
+    "build": "pnpm build:astro && pnpm search:index",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
@@ -19,6 +21,8 @@
     "postinstall": "simple-git-hooks"
   },
   "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.4.2",
     "tailwindcss": "^4.3.3"
@@ -28,6 +32,7 @@
     "lint-staged": "^17.6.0",
     "oxfmt": "^0.75.0",
     "oxlint": "^1.90.0",
+    "pagefind": "^1.5.2",
     "simple-git-hooks": "^2.14.0",
     "typescript": "^6.0.3",
     "vitest": "^5.0.5"
