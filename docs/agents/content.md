@@ -12,6 +12,8 @@ private repository, never in this one:
 ```text
 posts/<slug>.md      # one Markdown file per post
 posts/<slug>/        # images for that post
+templates/post.md    # new-post.sh scaffolds a post from this file
+new-post.sh          # creates posts/<slug>.md and an empty posts/<slug>/
 pages/about.md       # the about page, rendered at /about/
 ```
 
@@ -26,6 +28,11 @@ not a tracked file:
   material, never writing, and are never deployed.
 - `pnpm build:prod` clones the private repository's `main` with a read-only
   token; that is how Cloudflare builds the site.
+
+To start a post in the content repository, run `./new-post.sh <slug>`: it copies
+`templates/post.md`, substitutes the slug and today's date, creates the image
+folder and leaves `draft: true`. The template and the script live outside
+`posts/` and are never copied into the site.
 
 Every sync wipes `src/content/` first, so a deleted post disappears from the next
 build instead of lingering. `.git`, `.github`, dotfiles, symlinks and the content
