@@ -62,6 +62,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     search: (query: string) => Promise<{
       results: { data: () => Promise<PagefindResultData> }[];
     }>;
+    /** Optional: warm the index chunks for a query before searching. */
+    preload?: (query: string) => void;
   }
 
   const input = document.querySelector<HTMLInputElement>("#search-input");
@@ -93,9 +95,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     let timer: ReturnType<typeof setTimeout> | undefined;
     let latest = 0;
 
-    const load = async (): Promise<PagefindApi | null> => {
-      if (api || unavailable) {
+    const UNAVAILABLE =
+      "搜索索引不可用：先运行 pnpm build，再用 pnpm preview 打开这个页面。";
+
+    const load = async (quiet = false): Promise<PagefindApi | null> => {
+      if (api) {
         return api;
+      }
+
+      // A quiet preload may already have failed; a real search must still say so.
+      if (unavailable) {
+        if (!quiet) status.textContent = UNAVAILABLE;
+        return null;
       }
 
       try {
@@ -106,10 +117,18 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         return api;
       } catch {
         unavailable = true;
-        status.textContent =
-          "搜索索引不可用：先运行 pnpm build，再用 pnpm preview 打开这个页面。";
+        if (!quiet) status.textContent = UNAVAILABLE;
         return null;
       }
+    };
+
+    // Load the Pagefind module as soon as the field is focused, and warm the
+    // index chunks for the current text while typing, so the first query is
+    // not paying for a 45 KB module download.
+    const warm = (query = "") => {
+      void load(true).then((pagefind) => {
+        if (query.trim()) pagefind?.preload?.(query);
+      });
     };
 
     const render = (items: ReturnType<typeof toSearchResults>) => {
@@ -193,7 +212,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       void run(initial);
     }
 
+    input.addEventListener("focus", () => warm(input.value));
+    input.addEventListener("pointerdown", () => warm(input.value));
+
     input.addEventListener("input", () => {
+      warm(input.value);
       clearTimeout(timer);
       timer = setTimeout(() => void run(input.value), 200);
     });
