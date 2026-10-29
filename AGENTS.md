@@ -82,7 +82,10 @@ pnpm lint            # oxlint
 pnpm format          # oxfmt --write
 pnpm format:check    # oxfmt --check
 pnpm test            # vitest run
-pnpm verify          # check → lint → format:check → test → build
+pnpm fonts:ensure    # rebuild subsets only when src/ needs new glyphs (auto in dev/build)
+pnpm fonts:build     # force a rebuild
+pnpm fonts:check     # strict audit that fails instead of rebuilding
+pnpm verify          # fonts:ensure → check → lint → format:check → test → build
 ```
 
 `astro dev --background` starts a detached dev server with

@@ -56,7 +56,9 @@ pnpm lint           # oxlint
 pnpm format         # oxfmt --write
 pnpm format:check   # oxfmt --check
 pnpm test           # vitest run
-pnpm verify         # the full gate: check, lint, format:check, test, build
+pnpm fonts:check    # assert every source glyph is in the font subsets
+pnpm fonts:build    # rebuild the subsets (needs network or .fonts-cache/)
+pnpm verify         # check, lint, format:check, fonts:check, test, build
 ```
 
 Astro 7 adds a detached dev server:
@@ -65,6 +67,51 @@ Astro 7 adds a detached dev server:
 astro dev --background   # start in the background
 astro dev status|logs|stop
 ```
+
+## Fonts
+
+Four subsets ship with the site (`public/fonts/uiviu-*.woff2`): Kai (headings),
+Hei (body/UI), Meta (dates/labels/code) and Pixel (the `404` digits only). They
+are generated, renamed and checked by one script:
+
+- `pnpm fonts:ensure` — compare the characters used by `src/` with
+  `public/fonts/ui-charset.json`; rebuild only when something is missing. It is
+  the first step of `pnpm dev`, `pnpm build` and `pnpm verify`, so a new post (or
+  new interface copy) rebuilds the subsets automatically and the build keeps
+  going. It prints how many glyphs were added and reminds you to commit the
+  regenerated files if you want offline builds.
+- All four fonts — including the pixel face — derive their character set from the
+  same scan, so expanding what the pixel font renders needs no list to maintain.
+- `pnpm fonts:build` — force a rebuild.
+- `pnpm fonts:check` — strict audit that fails instead of rebuilding, useful in
+  review to see whether the committed subsets are current.
+
+Sources are pinned release files downloaded with Node's `fetch` into
+`.fonts-cache/` (git ignored, cached in CI by `.github/workflows/ci.yml`); the
+zip for the pixel font is unpacked in-process with `DecompressionStream`, so no
+`curl`, `unzip` or Python is required on the build image. Full fonts never enter
+the repository. The script subsets with `subset-font`, rewrites the internal
+`name` table to the `UIVIU …` family names (OFL reserved names and IPA Article
+3.1(4) both require this for modified fonts), preserves the upstream
+copyright/license records and compresses with `fontverter`.
+
+### Build environments
+
+- **GitHub Actions** (`.github/workflows/ci.yml`): network plus the
+  `.fonts-cache` cache step; a rebuild only downloads when glyphs actually
+  change.
+- **Cloudflare Workers Builds**: the font step needs no system binaries, but the
+  build image must run Node 24 (`NODE_VERSION=24`), and there is no
+  `.fonts-cache` cache, so a rebuild downloads ~35 MB once. Committing the
+  regenerated subsets after adding content keeps that path network-free.
+- **Recommended**: build and `wrangler deploy` from GitHub Actions (or locally)
+  so Cloudflare only serves `dist/`; then exactly one environment ever builds
+  fonts.
+
+Licensing: WenKai is OFL 1.1 with an Additional Permission for web subsets;
+Hei is IPA Font License 1.0 (derived subset must ship the license and allow
+replacement by the original — both covered in `public/fonts/README.md`);
+Maple Mono and Fusion Pixel are OFL 1.1. License texts sit next to the fonts.
 
 ## Git hooks
 
@@ -125,25 +172,31 @@ and is not committed.
 
 ## Deployment
 
-Configured for Cloudflare Workers static assets, not deployed.
+Static assets on Cloudflare Workers, deployed by **Workers Builds**. GitHub
+Actions runs checks only and never deploys.
 
-- `wrangler.jsonc` sets `name: "uiviu"`, `assets.directory: "./dist"` and
-  `not_found_handling: "404-page"`. There is no `main` and no adapter, so
-  Cloudflare serves the files directly and returns `dist/404.html` for misses.
-- `compatibility_date` must not be later than the installed workerd supports.
-  Wrangler refuses a future date with `Compatibility date … is in the future and
-  unsupported`; update the date together with wrangler.
-- Local checks that were actually run: `wrangler deploy --dry-run` (reads 35
-  files, uploads nothing) and `wrangler dev --port 8787`, where `/` and the post
-  page return 200, an unknown path returns 404 with the custom page, `/about`
-  redirects 307 to `/about/`, `/rss.xml` and `/sitemap-index.xml` are XML,
-  `/pagefind/pagefind.js` is served, `/search/` returns results and the reading
-  progress bar still tracks scrolling.
-- Commands: `pnpm preview:worker` (wrangler dev), `pnpm exec wrangler deploy`
-  after `pnpm build`. `pnpm deploy` does both. Nothing is uploaded by CI, and no
-  DNS record is changed from this repository.
+Workers Builds settings (Cloudflare dashboard → Worker → Settings → Builds):
 
-Before the first deploy the placeholder `site` in `astro.config.mjs`
-(`https://uiviu.example.com`) and `public/robots.txt` must be replaced with the
-production domain; that single config value drives RSS, canonical, Open Graph and
-the sitemap. Production deploys and DNS changes require explicit approval.
+| Setting           | Value                  |
+| ----------------- | ---------------------- |
+| Production branch | `main`                 |
+| Build command     | `pnpm build`           |
+| Deploy command    | `npx wrangler deploy`  |
+| Preview command   | `npx wrangler preview` |
+| Root directory    | repository root        |
+
+- The Worker name must match `name` in `wrangler.jsonc` (`uiviu`).
+- Node: `.node-version` (`24`, the image's default is 24.22.1); pnpm: the
+  `packageManager` field. The image installs dependencies before the build
+  command and times out at 20 minutes (this build takes 1–2).
+- `wrangler.jsonc` uses `assets.directory: "./dist"` and
+  `not_found_handling: "404-page"`; `compatibility_date` must not be later than
+  the installed workerd supports.
+- Fonts: committed subsets keep builds offline; a commit that adds glyphs
+  triggers `fonts:ensure` inside the build (one ~35 MB download) and deploys
+  correctly. Commit the regenerated `public/fonts/*` afterwards.
+- Previews: non-`main` branches get Preview URLs; production deploys create a
+  Worker version that can be rolled back.
+- Manual fallback: `pnpm build && pnpm exec wrangler deploy` after
+  `wrangler login`. No DNS change or production deploy happens without
+  explicit approval.

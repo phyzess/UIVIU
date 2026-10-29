@@ -25,13 +25,42 @@ utilities (`bg-paper`, `text-ink`, `border-rule`, …):
 
 `--color-signal` reaches only ~2.8:1 on paper, so it is never used for small text.
 Use it for markers, underlines, focus rings and fills; small accent text uses
-`--color-signal-ink`. Category pills are 5.1–5.6:1 on their soft backgrounds.
+`--color-signal-ink`. Category labels are plain text, never pills: the label is
+`--color-signal-ink` on Paper (5.07:1) and the word itself stays readable, so
+colour is not the only cue.
 
-Fonts: Newsreader 400 (latin subset, 22 KB woff2) is self-hosted through
-`@fontsource/newsreader` and preloaded in `BaseLayout`; `--font-display` falls
-back to Iowan/Palatino/Songti for CJK. `--font-sans` is the system UI plus CJK
-stack, `--font-mono` prefers JetBrains Mono. Weight 400 only: display text is
-never bold, so a second weight is not downloaded. Italic is not shipped either.
+## Type roles
+
+Four self-hosted subsets, built by `scripts/fonts.mjs` from pinned releases,
+renamed to `UIVIU …` family names (a modified subset may not keep the original
+name) and rebuilt automatically by `pnpm fonts:ensure` when copy needs new
+glyphs. Files are `uiviu-kai`, `uiviu-hei`, `uiviu-meta`, `uiviu-pixel`:
+
+| Role                                            | Font                              | Size / line-height        |
+| ----------------------------------------------- | --------------------------------- | ------------------------- |
+| Wordmark `UIVIU`                                | Newsreader 400 (`--font-display`) | 15px, 0.42em              |
+| Hero slogan                                     | LXGW WenKai (`--font-kai`)        | 15px / 16px, 1.9          |
+| Page titles (Notes, Archive, category, article) | WenKai                            | 30px / 36px, 1.3          |
+| List + archive article titles                   | WenKai                            | 20px / 22px, 1.5          |
+| Body `h2`                                       | WenKai                            | 25px / 27px, 1.4          |
+| Body `h3`, navigation, interface                | LXGW Neo XiHei (`--font-sans`)    | 20–22px `h3`; 14px nav    |
+| Body prose                                      | Neo XiHei                         | 17px, 1.85                |
+| List excerpt                                    | Neo XiHei                         | 15px, 1.8, two-line clamp |
+| Dates, category, reading time, pagination, code | Maple Mono (`--font-mono`)        | ≥12px, tabular numbers    |
+| 404 digits                                      | Fusion Pixel (`--font-pixel`)     | 12.8px, not preloaded     |
+
+Rules that keep the mixture honest: Maple Mono only ever renders Latin and
+numbers — CJK labels (目录, 上一页, 更新于, 月份) use Neo XiHei, because a CJK
+glyph in the mono font would silently fall back to the system face. Weight 400
+only; no italic. `font-display: swap` everywhere, and each family has a system
+fallback in the token.
+
+Loading: the hub preloads WenKai plus Neo XiHei (and Newsreader on the homepage
+only, via `preloadBrand`); 404 preloads WenKai alone (`preloadBody={false}`);
+the pixel font is never preloaded.
+
+Pagination is text only: `1 / 3` in Maple Mono on the left, Chinese previous /
+next links in Neo XiHei on the right, one hairline above.
 
 Pagination (Notes and category pages) is text only: `1 / 3` on the left,
 previous/next links on the right, one hairline above. No boxes or buttons.
@@ -102,12 +131,15 @@ measure, wrapping or spacing instead.
 - Main area is one hairline under the section label, then a two-column grid from
   `lg`: post list (`1fr`, 70–75%) and sidebar (15rem, 25–30%). No vertical rule
   between them.
-- The post list is pure text: date + category pill, title, two-line excerpt,
-  reading time. **No thumbnails, cover images, image placeholders, cards,
-  per-item borders or shadows.** Spacing creates the rhythm.
+- The post list is pure text with an information column: from `md` each row is
+  a `6.5rem` date column (date, category label, reading time, stacked) plus the
+  title and a two-line excerpt; below `md` the same DOM stacks as meta → title →
+  excerpt. **No thumbnails, cover images, image placeholders, cards or shadows**,
+  and one 1px hairline between rows only.
 - Categories and Archive rows are plain text rows with a dot, a count and a
   chevron; no per-row rules, no boxes. The sidebar ends with Archive — there is
-  no note block or secondary About link in it.
+  no note block or secondary About link in it. The sidebar keeps its 15rem
+  column; it never turns into a horizontal information band.
 - Footer closes the page in normal flow with a single hairline, two centred
   lines: `LIFE · THOUGHTS · CODE` and the domain.
 

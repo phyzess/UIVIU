@@ -1,4 +1,4 @@
-name: CI
+name: CI (checks only; deploys run in Cloudflare Workers Builds)
 
 on:
   push:
@@ -31,6 +31,12 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
 
+      - name: Cache font sources
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .fonts-cache
+          key: fonts-${{ hashFiles('scripts/fonts.mjs') }}
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -42,6 +48,11 @@ jobs:
 
       - name: Check formatting
         run: pnpm format:check
+
+      # Rebuilds the subsets only when new copy needs glyphs; the cache above
+      # keeps that offline in most runs.
+      - name: Font subsets
+        run: pnpm fonts:ensure
 
       - name: Test
         run: pnpm test

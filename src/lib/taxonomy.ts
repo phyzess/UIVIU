@@ -80,5 +80,5 @@ export function countByYear(
 
   return [...counts.entries()]
     .map(([year, count]) => ({ year, count }))
-    .sort((a, b) => b.year - a.year);
+    .toSorted((a, b) => b.year - a.year);
 }

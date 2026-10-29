@@ -13,7 +13,7 @@ const years = countByYear(posts);
 
 const rowClass =
   "group flex items-center gap-3 py-2.5 text-sm text-ink no-underline transition-colors hover:text-ink/60";
-const countClass = "font-mono text-[0.68rem] text-ink-soft tabular-nums";
+const countClass = "font-mono text-[0.75rem] text-ink-soft tabular-nums";
 const chevronClass = "text-ink-faint transition-transform group-hover:translate-x-0.5";
 ---
 
@@ -21,7 +21,7 @@ const chevronClass = "text-ink-faint transition-transform group-hover:translate-
   <section aria-labelledby="categories-heading">
     <h2
       id="categories-heading"
-      class="font-mono text-[0.68rem] tracking-[0.22em] text-ink-soft uppercase"
+      class="font-mono text-[0.75rem] tracking-[0.2em] text-ink-soft uppercase"
     >
       Categories
     </h2>
@@ -49,7 +49,7 @@ const chevronClass = "text-ink-faint transition-transform group-hover:translate-
   <section aria-labelledby="archive-heading" class="mt-12">
     <h2
       id="archive-heading"
-      class="font-mono text-[0.68rem] tracking-[0.22em] text-ink-soft uppercase"
+      class="font-mono text-[0.75rem] tracking-[0.2em] text-ink-soft uppercase"
     >
       Archive
     </h2>
@@ -64,7 +64,7 @@ const chevronClass = "text-ink-faint transition-transform group-hover:translate-
         years.map((entry) => (
           <li>
             <a href={`/archive/#year-${entry.year}`} class={rowClass}>
-              <span class="flex-1 font-mono text-[0.85rem] tracking-[0.02em]">
+              <span class="flex-1 font-mono text-[0.8125rem] tracking-[0.02em]">
                 {entry.year}
               </span>
               <span class={countClass}>{entry.count}</span>

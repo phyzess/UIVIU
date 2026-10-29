@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "pnpm fonts:ensure && astro dev",
     "build:astro": "astro build",
     "search:index": "pagefind --site dist",
-    "build": "pnpm build:astro && pnpm search:index",
+    "build": "pnpm fonts:ensure && pnpm build:astro && pnpm search:index",
     "preview": "astro preview",
     "preview:worker": "wrangler dev",
     "astro": "astro",
@@ -16,11 +16,14 @@
     "lint:fix": "oxlint --fix",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
+    "fonts:build": "node scripts/fonts.mjs build",
+    "fonts:check": "node scripts/fonts.mjs check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify": "pnpm check && pnpm lint && pnpm format:check && pnpm test && pnpm build",
+    "verify": "pnpm fonts:ensure && pnpm check && pnpm lint && pnpm format:check && pnpm test && pnpm build",
     "deploy": "pnpm build && wrangler deploy",
-    "postinstall": "simple-git-hooks"
+    "postinstall": "simple-git-hooks",
+    "fonts:ensure": "node scripts/fonts.mjs ensure"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
@@ -32,11 +35,13 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "fontverter": "^2.0.0",
     "lint-staged": "^17.6.0",
     "oxfmt": "^0.75.0",
     "oxlint": "^1.90.0",
     "pagefind": "^1.5.2",
     "simple-git-hooks": "^2.14.0",
+    "subset-font": "^2.9.0",
     "typescript": "^6.0.3",
     "vitest": "^5.0.5",
     "wrangler": "^4.154.0"

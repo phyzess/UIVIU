@@ -43,6 +43,8 @@ pnpm dev        # http://localhost:4321
 | `pnpm lint`                         | Oxlint                                         |
 | `pnpm format` / `pnpm format:check` | Oxfmt write / verify                           |
 | `pnpm test` / `pnpm test:watch`     | Vitest                                         |
+| `pnpm fonts:build`                  | Rebuild the font subsets from pinned releases  |
+| `pnpm fonts:check`                  | Fail when source copy needs missing glyphs     |
 | `pnpm verify`                       | check → lint → format:check → test → build     |
 | `pnpm deploy`                       | Build, then `wrangler deploy` (needs auth)     |
 
@@ -111,40 +113,70 @@ The feed is at `/rss.xml` (announced in every page head) and the sitemap is
 `/sitemap-index.xml`. Both are generated from published posts only. `/notes/`
 paginates at 10 posts per page, and category pages paginate the same way.
 
-Typography: Newsreader 400 (latin, 22 KB woff2) is self-hosted and preloaded;
-Chinese text falls back to the system serif stack.
+Typography: four self-hosted subsets — LXGW WenKai (headings), LXGW Neo XiHei
+(body/UI), Maple Mono (dates/labels/code) and Fusion Pixel (the 404 digits).
+They are rebuilt automatically by `pnpm fonts:ensure` (the first step of
+`pnpm dev`, `pnpm build` and `pnpm verify`) whenever new copy needs glyphs, from
+pinned releases cached in `.fonts-cache/`. The subsets are renamed to neutral
+`UIVIU …` family names, as OFL reserved names and the IPA license require for
+modified fonts. Newsreader still carries the `UIVIU` wordmark.
 
 ## Deployment (Cloudflare Workers static assets)
 
-`wrangler.jsonc` serves `dist/` as static assets, with `not_found_handling:
-"404-page"` and no Worker script or SSR adapter.
+`wrangler.jsonc` serves `dist/` as static assets with `not_found_handling:
+"404-page"`, no Worker script and no SSR adapter.
 
-Check the build locally first:
+Deploys run in **Cloudflare Workers Builds** (Cloudflare's Git integration).
+GitHub Actions only runs checks — it never deploys.
+
+### Workers Builds settings
+
+Connect the repository to the `uiviu` Worker and use:
+
+| Setting           | Value                            |
+| ----------------- | -------------------------------- |
+| Production branch | `main`                           |
+| Build command     | `pnpm build`                     |
+| Deploy command    | `npx wrangler deploy` (default)  |
+| Preview command   | `npx wrangler preview` (default) |
+| Root directory    | repository root                  |
+
+- The Worker name in the dashboard must equal `name` in `wrangler.jsonc`
+  (`uiviu`), otherwise the build fails.
+- Node comes from `.node-version` (`24`, resolved to the build image's 24.22.1
+  LTS) and pnpm from the `packageManager` field; Workers Builds installs
+  dependencies before running the build command.
+- Limits: 20 minutes per build, 8 GB memory, 3000 build minutes/month on the
+  free plan. This site builds in one to two minutes.
+- Pushes to branches other than `main` create Preview URLs; production deploys
+  create a Worker version that can be rolled back.
+
+`pnpm build` runs `fonts:ensure`, the Astro build and the Pagefind index, so the
+uploaded assets always match the content. The committed font subsets normally
+make the build network-free; if a commit adds new glyphs, `fonts:ensure` rebuilds
+them inside the Workers Builds run (downloading the pinned sources once) and the
+deploy is still correct — commit `public/fonts/*` afterwards to keep CI builds
+offline.
+
+### Checking a build locally
 
 ```bash
-pnpm verify            # check, lint, format, tests, build + search index
-pnpm preview:worker    # wrangler dev → http://localhost:8787
+pnpm verify             # fonts:ensure, check, lint, format, tests, build + search index
+pnpm preview            # astro preview → http://localhost:4321
+pnpm preview:worker     # wrangler dev → http://localhost:8787 (real Workers assets)
+pnpm exec wrangler deploy --dry-run   # validate the config without uploading
 ```
 
-Then confirm `/`, `/posts/about-this-site/`, an unknown path (custom 404),
-`/rss.xml`, `/sitemap-index.xml` and `/search/` (Pagefind assets) all behave.
-`pnpm exec wrangler deploy --dry-run` validates the config without uploading.
+`pnpm deploy` (build + `wrangler deploy`) remains available for a manual deploy
+from a machine with `wrangler login`; it is not part of the normal flow.
 
-Deploying needs your Cloudflare account and is never done by the project itself:
+### Before the first deploy
 
-```bash
-pnpm build
-pnpm exec wrangler login     # once per machine
-pnpm exec wrangler deploy    # uploads dist/ as the `uiviu` Worker
-```
-
-Before the first deploy:
-
-1. Replace the placeholder `site` in `astro.config.mjs` with the production
-   domain, and update `public/robots.txt` to match.
+1. Keep `site` in `astro.config.mjs` (`https://uiviu.me`) and
+   `public/robots.txt` pointing at the production domain.
 2. Attach the domain in the Cloudflare dashboard (Workers → `uiviu` → Settings →
-   Domains & Routes). DNS records are yours to change.
-3. Keep `compatibility_date` in `wrangler.jsonc` no later than the installed
+   Domains & Routes); DNS records are yours to change.
+3. `compatibility_date` in `wrangler.jsonc` must not be later than the installed
    workerd supports; it is a date, not a version.
 
 Wrangler's local state lives in `.wrangler/`, which is git-ignored.

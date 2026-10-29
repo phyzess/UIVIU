@@ -9,11 +9,23 @@ const { category } = Astro.props;
 const meta = CATEGORY_META[category];
 ---
 
-<span
-  class:list={[
-    "inline-flex items-center rounded-full px-2.5 py-0.5 font-mono text-[0.6rem] leading-[1.6] tracking-[0.14em] uppercase",
-    meta.pillClass,
-  ]}
->
+<a href={meta.path} class="category-label">
   {meta.badge}
-</span>
+</a>
+
+<style>
+  .category-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-signal-ink);
+    text-decoration: none;
+  }
+
+  .category-label:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+</style>
