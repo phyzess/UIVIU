@@ -43,9 +43,13 @@ const {
     )}
   </div>
 
-  <ul>
-    {posts.map((post) => (
-      <PostListItem post={post} />
-    ))}
-  </ul>
+  {posts.length === 0 ? (
+    <p class="mt-8 text-sm leading-relaxed text-ink-soft">{emptyText}</p>
+  ) : (
+    <ul>
+      {posts.map((post) => (
+        <PostListItem post={post} />
+      ))}
+    </ul>
+  )}
 </section>

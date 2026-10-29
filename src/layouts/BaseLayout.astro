@@ -3,7 +3,7 @@ import newsreaderFont from "@fontsource/newsreader/files/newsreader-latin-400-no
 
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
-import { DEFAULT_DESCRIPTION, SITE_NAME } from "../lib/site";
+import { BRAND_HEADLINE_EN, DEFAULT_DESCRIPTION, SITE_NAME } from "../lib/site";
 import "../styles/global.css";
 
 interface Props {
@@ -23,6 +23,7 @@ const {
 const documentTitle = title === SITE_NAME ? SITE_NAME : `${title} — ${SITE_NAME}`;
 const canonicalPath = Astro.url.pathname;
 const canonicalUrl = Astro.site ? new URL(canonicalPath, Astro.site).href : canonicalPath;
+const ogImageUrl = Astro.site ? new URL("/og.png", Astro.site).href : "/og.png";
 ---
 
 <!doctype html>
@@ -48,6 +49,9 @@ const canonicalUrl = Astro.site ? new URL(canonicalPath, Astro.site).href : cano
       crossorigin="anonymous"
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#f8f7f2" />
     <meta name="generator" content={Astro.generator} />
     <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={SITE_NAME} />
@@ -55,9 +59,15 @@ const canonicalUrl = Astro.site ? new URL(canonicalPath, Astro.site).href : cano
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:locale" content="zh_CN" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${SITE_NAME} — ${BRAND_HEADLINE_EN}`} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={documentTitle} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
   </head>
   <body class="min-h-dvh bg-paper font-sans text-ink antialiased">
     <a

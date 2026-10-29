@@ -93,9 +93,23 @@ When in doubt, remove a line before adding one.
   it materially helps screen-reader pronunciation.
 - Keep text contrast at 4.5:1 or better for body copy.
 
+## Mark and icons
+
+The mark is a symmetric frame with one corner missing, a signal-coloured axis,
+and — from 48px up — the piece that fell off, sitting just outside the frame.
+It is deliberately deadpan: the structure is not broken, it was simply not put
+back. Do not add gloss, gradients, rounded corners or a second accent.
+
+- `public/favicon.svg` — 16/32px version: frame + axis + corner gap, no loose
+  piece (the dot turns into noise below 48px).
+- `public/favicon.ico` — 16 and 32 from that version, 48 with the piece.
+- `public/apple-touch-icon.png` (180) and `public/icon-512.png` — full version.
+- `public/og.png` — 1200×630 default share card: mark, wordmark, English
+  headline, Chinese subtitle, domain, on Paper.
+
 ## Known gaps
 
-- No webfont yet (see above); the serif stack falls back to system faces.
+- No Android web app manifest; `icon-512.png` is ready if one is added.
 
 ## Overflow rules
 
