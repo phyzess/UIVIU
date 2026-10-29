@@ -45,7 +45,11 @@ const {
   </div>
 
   {posts.length === 0 ? (
-    <EmptyState title={emptyText} hint="最近的文章会出现在这里。" />
+    <EmptyState
+      title={emptyText}
+      hint="第一篇还在路上。"
+      action={{ href: "/about/", label: "关于这个站点" }}
+    />
   ) : (
     <ul>
       {posts.map((post) => (

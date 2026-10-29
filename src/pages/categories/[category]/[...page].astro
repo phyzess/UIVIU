@@ -34,8 +34,9 @@ const meta = CATEGORY_META[raw];
     title={meta.label}
     headingId="category-title"
     posts={page.data}
-    emptyText="这个分类还没有文章。"
-    emptyHint="换个分类看看，或者等下一次更新。"
+    emptyText="这个分类暂时还没有内容。"
+    emptyHint="有些想法还在路上。你可以先看看其他分类。"
+    emptyAction={{ href: "/notes/", label: "浏览全部文章" }}
   >
     <Fragment slot="intro">
       {page.total} 篇已发布文章。

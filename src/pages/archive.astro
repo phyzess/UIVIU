@@ -24,7 +24,11 @@ const groups = groupPostsByYearMonth(posts);
     </header>
 
     {groups.length === 0 ? (
-      <EmptyState title="还没有文章。" hint="归档会按年月整理已发布的文章。" />
+      <EmptyState
+        title="还没有留下记录。"
+        hint="文章发布后会按年月归档在这里。"
+        action={{ href: "/notes/", label: "查看全部文章" }}
+      />
     ) : (
       <div class="mt-12 space-y-14">
         {groups.map((group) => (

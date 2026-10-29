@@ -39,11 +39,37 @@ previous/next links on the right, one hairline above. No boxes or buttons.
 ## Empty states
 
 One component (`EmptyState`) for every "nothing here yet" case: the mark drawn
-in `--color-rule` with a `signal/30` axis, a title in Ink, and one muted hint
-line. It is centred on both axes inside a `min-h-[17rem]` band, so the list
-area keeps its shape whether it holds one post or none. Sidebar rows use the
-compact variant: the title only, no mark, no band. Never replace this with a
-bare paragraph, and never add an illustration.
+in `--color-rule` with a `signal/30` axis, a title in Ink, one muted hint line
+and at most one quiet text-link action (never a button). It is centred on both
+axes inside a `min-h-[17rem]` band, so the list area keeps its shape whether it
+holds one post or none. Sidebar rows use the compact variant: the title only,
+no mark, no action, no band.
+
+The design is shared, the copy is not. Each state names its own situation and
+offers its own next step:
+
+| State            | Title                    | Action                   |
+| ---------------- | ------------------------ | ------------------------ |
+| No posts yet     | 还没有文章。             | 关于这个站点 → `/about/` |
+| Notes empty      | 还没有文章。             | —                        |
+| Category empty   | 这个分类暂时还没有内容。 | 浏览全部文章 → `/notes/` |
+| Archive empty    | 还没有留下记录。         | 查看全部文章 → `/notes/` |
+| Search: no match | 没有找到符合条件的结果。 | 查看全部文章 → `/notes/` |
+
+Search keeps the typed query in the input, hides the now-duplicate status line
+visually while keeping it as the `aria-live` region, and shows an explicit
+error (never an empty state) when Pagefind itself fails. Never add an
+illustration and never fake content to fill the space.
+
+## 404 voice
+
+`/404` is an editorial field note, not an error screen: `FIELD NOTE NO. 404`
+and `STATUS: UNRESOLVED` on a hairline, an `AN UNEXPECTED RESULT` label, the
+serif line `404. A page of no particular use.`, one sentence of Chinese, the
+English close `The derivation was sound. The destination was not.`, and a
+`返回首页 →` text link. No oversized number, no illustration, no button, and it
+carries `noindex`. The humour comes from the deadpan wording, so keep the copy
+plain and never add a joke that breaks the tone.
 
 ## Homepage hierarchy
 

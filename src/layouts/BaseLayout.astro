@@ -12,12 +12,15 @@ interface Props {
   description?: string;
   /** Open Graph type; posts override this with "article". */
   ogType?: "website" | "article";
+  /** Keep the page out of search engines (404 and other non-content pages). */
+  noindex?: boolean;
 }
 
 const {
   title = SITE_NAME,
   description = DEFAULT_DESCRIPTION,
   ogType = "website",
+  noindex = false,
 } = Astro.props;
 
 const documentTitle = title === SITE_NAME ? SITE_NAME : `${title} — ${SITE_NAME}`;
@@ -52,6 +55,7 @@ const ogImageUrl = Astro.site ? new URL("/og.png", Astro.site).href : "/og.png";
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#f8f7f2" />
+    {noindex && <meta name="robots" content="noindex" />}
     <meta name="generator" content={Astro.generator} />
     <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={SITE_NAME} />

@@ -12,9 +12,11 @@ interface Props {
   posts: Post[];
   emptyText: string;
   emptyHint?: string;
+  emptyAction?: { href: string; label: string };
 }
 
-const { eyebrow, title, headingId, posts, emptyText, emptyHint } = Astro.props;
+const { eyebrow, title, headingId, posts, emptyText, emptyHint, emptyAction } =
+  Astro.props;
 ---
 
 <section class="py-14 md:py-20" aria-labelledby={headingId}>
@@ -31,7 +33,7 @@ const { eyebrow, title, headingId, posts, emptyText, emptyHint } = Astro.props;
   </header>
 
   {posts.length === 0 ? (
-    <EmptyState title={emptyText} hint={emptyHint} />
+    <EmptyState title={emptyText} hint={emptyHint} action={emptyAction} />
   ) : (
     <ul class="mt-8 max-w-[46rem]">
       {posts.map((post) => (

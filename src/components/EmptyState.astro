@@ -4,11 +4,13 @@ interface Props {
   title: string;
   /** Optional second line that explains what will appear here. */
   hint?: string;
-  /** Sidebar rows: no mark, no min height. */
+  /** Optional next step; rendered as a quiet text link, never a button. */
+  action?: { href: string; label: string };
+  /** Sidebar rows: no mark, no action, no min height. */
   compact?: boolean;
 }
 
-const { title, hint, compact = false } = Astro.props;
+const { title, hint, action, compact = false } = Astro.props;
 ---
 
 {compact ? (
@@ -35,9 +37,26 @@ const { title, hint, compact = false } = Astro.props;
         class="text-signal/30"
       />
     </svg>
+
     <p class="mt-5 text-sm leading-relaxed text-ink">{title}</p>
+
     {hint && (
-      <p class="mt-2 max-w-[22rem] text-[0.8rem] leading-[1.9] text-ink-soft">{hint}</p>
+      <p class="mt-2 max-w-[24rem] text-[0.8rem] leading-[1.9] text-ink-soft">{hint}</p>
+    )}
+
+    {action && (
+      <a
+        href={action.href}
+        class="group mt-5 inline-flex items-center gap-1 font-mono text-[0.68rem] tracking-[0.14em] text-signal-ink no-underline hover:underline hover:underline-offset-4"
+      >
+        {action.label}
+        <span
+          aria-hidden="true"
+          class="inline-block transition-transform group-hover:translate-x-0.5"
+        >
+          →
+        </span>
+      </a>
     )}
   </div>
 )}

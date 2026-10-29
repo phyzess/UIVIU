@@ -1,4 +1,5 @@
 ---
+import EmptyState from "../components/EmptyState.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
@@ -39,6 +40,15 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     ></p>
 
     <ol class="mt-8 max-w-[42rem]" data-search-results></ol>
+    <div class="max-w-[42rem]" data-search-empty hidden></div>
+
+    <template data-search-empty-template>
+      <EmptyState
+        title="没有找到符合条件的结果。"
+        hint="试试换一个关键词，或者浏览全部文章。"
+        action={{ href: "/notes/", label: "查看全部文章" }}
+      />
+    </template>
   </section>
 </BaseLayout>
 
@@ -54,8 +64,26 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   const input = document.querySelector<HTMLInputElement>("#search-input");
   const list = document.querySelector<HTMLOListElement>("[data-search-results]");
   const status = document.querySelector<HTMLElement>("[data-search-status]");
+  const emptyHost = document.querySelector<HTMLElement>("[data-search-empty]");
+  const emptyTemplate = document.querySelector<HTMLTemplateElement>(
+    "[data-search-empty-template]",
+  );
 
-  if (input && list && status) {
+  if (input && list && status && emptyHost && emptyTemplate) {
+    const setStatus = (text: string, visuallyHidden = false) => {
+      status.textContent = text;
+      status.classList.toggle("sr-only", visuallyHidden);
+    };
+
+    const showEmpty = (visible: boolean) => {
+      emptyHost.hidden = !visible;
+      emptyHost.replaceChildren();
+      if (visible) {
+        emptyHost.append(emptyTemplate.content.cloneNode(true));
+      }
+      list.hidden = visible;
+    };
+
     const PAGE_SIZE = 8;
     let api: PagefindApi | null = null;
     let unavailable = false;
@@ -115,7 +143,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
       if (!term) {
         render([]);
-        status.textContent = "";
+        setStatus("");
+        showEmpty(false);
         return;
       }
 
@@ -124,7 +153,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         return;
       }
 
-      status.textContent = "搜索中…";
+      setStatus("搜索中…");
 
       try {
         const search = await pagefind.search(term);
@@ -141,13 +170,17 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
         const items = toSearchResults(data);
         render(items);
-        status.textContent =
+        showEmpty(items.length === 0);
+        setStatus(
           items.length === 0
-            ? "没有找到匹配的内容。"
-            : `找到 ${search.results.length} 条结果。`;
+            ? "没有找到符合条件的结果。"
+            : `找到 ${search.results.length} 条结果。`,
+          items.length === 0,
+        );
       } catch {
         render([]);
-        status.textContent = "搜索出错了，请重试。";
+        showEmpty(false);
+        setStatus("搜索出错了，请重试。");
       }
     };
 
