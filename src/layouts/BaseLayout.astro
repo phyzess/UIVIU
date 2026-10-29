@@ -96,6 +96,7 @@ const ogImageUrl = Astro.site ? new URL("/og.png", Astro.site).href : "/og.png";
     <meta name="twitter:title" content={documentTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+    <slot name="head" />
   </head>
   <body class="min-h-dvh bg-paper font-sans text-ink antialiased">
     <a

@@ -4,6 +4,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="搜索" description="在 UIVIU 已发布的文章中搜索标题与正文。">
+  <Fragment slot="head">
+    {import.meta.env.PROD && <link rel="modulepreload" href="/pagefind/pagefind.js" />}
+  </Fragment>
+
   <section class="py-14 md:py-20" aria-labelledby="search-title">
     <header class="max-w-[42rem]">
       <p class="font-mono text-[0.75rem] tracking-[0.24em] text-ink-soft uppercase">
@@ -62,6 +66,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     search: (query: string) => Promise<{
       results: { data: () => Promise<PagefindResultData> }[];
     }>;
+    /** Loads Pagefind's worker and site metadata. */
+    init?: () => Promise<void>;
     /** Optional: warm the index chunks for a query before searching. */
     preload?: (query: string) => void;
   }
@@ -126,8 +132,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     // index chunks for the current text while typing, so the first query is
     // not paying for a 45 KB module download.
     const warm = (query = "") => {
-      void load(true).then((pagefind) => {
-        if (query.trim()) pagefind?.preload?.(query);
+      void load(true).then(async (pagefind) => {
+        if (!pagefind) return;
+        // `init()` is what pulls the worker and metadata; without it the first
+        // search pays for the worker download and WASM start-up.
+        await pagefind.init?.();
+        if (query.trim()) pagefind.preload?.(query);
       });
     };
 
@@ -211,6 +221,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       input.value = initial;
       void run(initial);
     }
+
+    // The search page has no other job, so start loading Pagefind immediately
+    // instead of waiting for the first keystroke.
+    warm();
 
     input.addEventListener("focus", () => warm(input.value));
     input.addEventListener("pointerdown", () => warm(input.value));
