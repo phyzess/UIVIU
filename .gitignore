@@ -24,12 +24,6 @@ coverage/
 # cloudflare
 .wrangler/
 
-# local-only planning document (must never be committed)
-PROJECT_PLAN.md
-
-# scaffold scratch files
-*.scaffold
-
 # OS and editor misc
 .DS_Store
 .idea/

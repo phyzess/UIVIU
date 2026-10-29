@@ -85,24 +85,22 @@ working non-interactively.
 
 ## Current phase
 
-Phases from the local planning document (`PROJECT_PLAN.md`, kept out of git and
-deleted at the end of the project):
+Delivery phases (the local planning document has been removed after the final
+QA):
 
-| Phase | Scope                                                   | Status  |
-| ----- | ------------------------------------------------------- | ------- |
-| 0     | Environment check                                       | done    |
-| 1     | Astro skeleton, Tailwind, brand homepage, 404           | done    |
-| 2     | Tooling baseline: check, lint, format, test, hooks, CI  | done    |
-| 3     | Content collections, post routes, TOC, reading progress | done    |
-| 4     | Homepage, archive, about, responsive polish             | done    |
-| 5     | Pagefind search, RSS, sitemap, canonical/OG             | done    |
-| 6     | Cloudflare Workers static assets config and docs        | done    |
-| 7     | Final QA and delivery                                   | pending |
+| Phase | Scope                                                   | Status |
+| ----- | ------------------------------------------------------- | ------ |
+| 0     | Environment check                                       | done   |
+| 1     | Astro skeleton, Tailwind, brand homepage, 404           | done   |
+| 2     | Tooling baseline: check, lint, format, test, hooks, CI  | done   |
+| 3     | Content collections, post routes, TOC, reading progress | done   |
+| 4     | Homepage, archive, about, responsive polish             | done   |
+| 5     | Pagefind search, RSS, sitemap, canonical/OG             | done   |
+| 6     | Cloudflare Workers static assets config and docs        | done   |
+| 7     | Final QA and delivery                                   | done   |
 
 ## Notes for agents
 
-- `PROJECT_PLAN.md` is a local planning document: it is git-ignored on purpose
-  and must not be committed.
 - Content is authored in Markdown; a Git-based CMS is the preferred future
   option, and no Git write token may ever reach browser code.
 - When a tool behaves unexpectedly, check the installed version's official docs

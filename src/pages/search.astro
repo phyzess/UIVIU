@@ -27,7 +27,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         autocomplete="off"
         spellcheck="false"
         placeholder="输入关键词，例如 Markdown"
-        class="w-full border-0 border-b border-rule bg-transparent px-0 py-3 font-display text-2xl leading-snug text-ink placeholder:text-ink-soft/70 focus:border-signal focus:outline-none"
+        class="w-full border-0 border-b border-rule bg-transparent px-0 py-3 font-display text-2xl leading-snug text-ink placeholder:text-ink-soft focus:border-signal focus:outline-none"
       />
     </form>
 
@@ -99,7 +99,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
         const excerpt = document.createElement("span");
         excerpt.className =
-          "mt-1 block text-sm leading-relaxed text-ink-soft [&_mark]:bg-signal/15 [&_mark]:text-ink";
+          "mt-1 block text-sm leading-relaxed text-ink-soft [&_mark]:bg-signal/25 [&_mark]:text-ink";
         // Pagefind escapes entities in `excerpt` before adding <mark> elements.
         excerpt.innerHTML = item.excerpt;
 

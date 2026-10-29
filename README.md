@@ -14,9 +14,10 @@ editorial typography and very little machinery.
 - [Astro](https://astro.build) 7 — static output, no SSR adapter
 - TypeScript in `strict` mode
 - Tailwind CSS 4 through the official `@tailwindcss/vite` plugin
+- Astro Content Collections for Markdown posts, Shiki for code highlighting
+- [Pagefind](https://pagefind.app) search, `@astrojs/rss`, `@astrojs/sitemap`
 - Oxlint + Oxfmt, Vitest, `simple-git-hooks` + `lint-staged`
-- Planned: Astro Content Collections, Pagefind search, `@astrojs/rss`, sitemap,
-  Cloudflare Workers static assets
+- Cloudflare Workers static assets (`wrangler.jsonc`), no SSR adapter
 
 ## Requirements
 
@@ -33,13 +34,17 @@ pnpm dev        # http://localhost:4321
 | Command                             | Description                                    |
 | ----------------------------------- | ---------------------------------------------- |
 | `pnpm dev`                          | Start the dev server                           |
-| `pnpm build`                        | Build the static site into `dist/`             |
+| `pnpm build`                        | Astro build into `dist/`, then Pagefind index  |
+| `pnpm build:astro`                  | Astro build only (no search index)             |
+| `pnpm search:index`                 | Rebuild the Pagefind index over `dist/`        |
 | `pnpm preview`                      | Serve the build locally                        |
+| `pnpm preview:worker`               | Preview through `wrangler dev`                 |
 | `pnpm check`                        | `astro check` — types and template diagnostics |
 | `pnpm lint`                         | Oxlint                                         |
 | `pnpm format` / `pnpm format:check` | Oxfmt write / verify                           |
 | `pnpm test` / `pnpm test:watch`     | Vitest                                         |
 | `pnpm verify`                       | check → lint → format:check → test → build     |
+| `pnpm deploy`                       | Build, then `wrangler deploy` (needs auth)     |
 
 ## Project layout
 
