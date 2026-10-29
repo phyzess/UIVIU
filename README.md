@@ -50,7 +50,7 @@ pnpm dev        # http://localhost:4321
 
 ```text
 src/
-  components/   SiteHeader, SiteFooter, Hero, PostList, PostListItem, CategoryTag,
+  components/   SiteHeader, SiteFooter, Hero, PostList, PostListItem, PostIndexPage, CategoryTag,
                 Sidebar, TableOfContents, ReadingProgress
   content/      posts/*.md
   layouts/      BaseLayout, PostLayout

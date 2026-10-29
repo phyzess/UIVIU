@@ -51,7 +51,7 @@ If copy does not fit, change the layout, measure or spacing — never the copy.
 ```text
 src/
   components/   SiteHeader (nav only), SiteFooter, Hero, PostList, PostListItem,
-                CategoryTag, Sidebar, TableOfContents, ReadingProgress
+                PostIndexPage, CategoryTag, Sidebar, TableOfContents, ReadingProgress
   content/      posts/*.md — Markdown posts with frontmatter
   layouts/      BaseLayout (head, chrome, skip link), PostLayout (article, TOC)
   lib/          site.ts (brand copy), posts.ts (queries), post-utils.ts,
