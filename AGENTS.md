@@ -52,7 +52,7 @@ If copy does not fit, change the layout, measure or spacing — never the copy.
 ```text
 src/
   components/   SiteHeader (nav only), SiteFooter, Hero, PostList, PostListItem,
-                PostIndexPage, Pagination, CategoryTag, Sidebar,
+                PostIndexPage, Pagination, EmptyState, CategoryTag, Sidebar,
                 TableOfContents, ReadingProgress
   content/      posts/*.md (posts), pages/about.md (about page)
   layouts/      BaseLayout (head, chrome, skip link), PostLayout (article, TOC)

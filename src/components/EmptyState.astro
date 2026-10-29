@@ -1,0 +1,43 @@
+---
+interface Props {
+  /** Main line, e.g. `还没有文章。` */
+  title: string;
+  /** Optional second line that explains what will appear here. */
+  hint?: string;
+  /** Sidebar rows: no mark, no min height. */
+  compact?: boolean;
+}
+
+const { title, hint, compact = false } = Astro.props;
+---
+
+{compact ? (
+  <p class="py-2 text-sm leading-relaxed text-ink-soft">{title}</p>
+) : (
+  <div class="flex min-h-[17rem] flex-col items-center justify-center px-6 py-12 text-center">
+    <svg
+      class="size-7"
+      viewBox="0 0 32 32"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M25.5 19.5V6.5H6.5v19h13"
+        stroke="currentColor"
+        stroke-width="2.5"
+        class="text-rule"
+      />
+      <path
+        d="M16 6.5v18"
+        stroke="currentColor"
+        stroke-width="2.5"
+        class="text-signal/30"
+      />
+    </svg>
+    <p class="mt-5 text-sm leading-relaxed text-ink">{title}</p>
+    {hint && (
+      <p class="mt-2 max-w-[22rem] text-[0.8rem] leading-[1.9] text-ink-soft">{hint}</p>
+    )}
+  </div>
+)}

@@ -22,6 +22,7 @@ const { page } = Astro.props;
     headingId="notes-title"
     posts={page.data}
     emptyText="还没有文章。"
+    emptyHint="文章会按发布时间从新到旧排列。"
   >
     <Fragment slot="intro">{page.total} 篇已发布文章，按时间从新到旧。</Fragment>
   </PostIndexPage>

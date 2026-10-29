@@ -51,7 +51,8 @@ pnpm dev        # http://localhost:4321
 ```text
 src/
   components/   SiteHeader, SiteFooter, Hero, PostList, PostListItem, PostIndexPage,
-                Pagination, CategoryTag, Sidebar, TableOfContents, ReadingProgress
+                Pagination, EmptyState, CategoryTag, Sidebar, TableOfContents,
+                ReadingProgress
   content/      posts/*.md
   layouts/      BaseLayout, PostLayout
   lib/          site.ts — brand copy in one place

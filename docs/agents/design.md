@@ -36,12 +36,22 @@ never bold, so a second weight is not downloaded. Italic is not shipped either.
 Pagination (Notes and category pages) is text only: `1 / 3` on the left,
 previous/next links on the right, one hairline above. No boxes or buttons.
 
+## Empty states
+
+One component (`EmptyState`) for every "nothing here yet" case: the mark drawn
+in `--color-rule` with a `signal/30` axis, a title in Ink, and one muted hint
+line. It is centred on both axes inside a `min-h-[17rem]` band, so the list
+area keeps its shape whether it holds one post or none. Sidebar rows use the
+compact variant: the title only, no mark, no band. Never replace this with a
+bare paragraph, and never add an illustration.
+
 ## Homepage hierarchy
 
 The order is fixed and must survive every layout change:
 
 1. `UIVIU` — small, letterspaced, the page `h1`.
-2. English headline — serif, muted, generous measure.
+2. English headline — serif, muted, capped at 29.5rem on `md` so it breaks
+   after "Useless," (measured against the self-hosted Newsreader metrics).
 3. Chinese subtitle — full string, never truncated, broken at its comma on `md`.
 
 No decorative rule sits under the subtitle; the post list follows after plain
@@ -65,7 +75,8 @@ and never shorten it to fit: fix the measure, wrapping or spacing instead.
   reading time. **No thumbnails, cover images, image placeholders, cards,
   per-item borders or shadows.** Spacing creates the rhythm.
 - Categories and Archive rows are plain text rows with a dot, a count and a
-  chevron; no per-row rules, no boxes.
+  chevron; no per-row rules, no boxes. The sidebar ends with Archive — there is
+  no note block or secondary About link in it.
 - Footer closes the page in normal flow with a single hairline, two centred
   lines: `LIFE · THOUGHTS · CODE` and the domain.
 

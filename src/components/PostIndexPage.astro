@@ -1,4 +1,5 @@
 ---
+import EmptyState from "./EmptyState.astro";
 import PostListItem from "./PostListItem.astro";
 import type { Post } from "../lib/posts";
 
@@ -10,9 +11,10 @@ interface Props {
   headingId: string;
   posts: Post[];
   emptyText: string;
+  emptyHint?: string;
 }
 
-const { eyebrow, title, headingId, posts, emptyText } = Astro.props;
+const { eyebrow, title, headingId, posts, emptyText, emptyHint } = Astro.props;
 ---
 
 <section class="py-14 md:py-20" aria-labelledby={headingId}>
@@ -29,7 +31,7 @@ const { eyebrow, title, headingId, posts, emptyText } = Astro.props;
   </header>
 
   {posts.length === 0 ? (
-    <p class="mt-12 text-sm leading-relaxed text-ink-soft">{emptyText}</p>
+    <EmptyState title={emptyText} hint={emptyHint} />
   ) : (
     <ul class="mt-8 max-w-[46rem]">
       {posts.map((post) => (
