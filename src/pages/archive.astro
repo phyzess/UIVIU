@@ -30,7 +30,7 @@ const groups = groupPostsByYearMonth(posts);
         action={{ href: "/notes/", label: "查看全部文章" }}
       />
     ) : (
-      <div class="mt-12 space-y-14">
+      <div class="mt-8 space-y-14">
         {groups.map((group) => (
           <section aria-labelledby={`year-${group.year}`}>
             <h2

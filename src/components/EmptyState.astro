@@ -27,19 +27,23 @@ const { title, hint, action, compact = false } = Astro.props;
       <p class="mt-2 max-w-[24rem] text-[0.8rem] leading-[1.9] text-ink-soft">{hint}</p>
     )}
 
-    {action && (
-      <a
-        href={action.href}
-        class="group mt-5 inline-flex items-center gap-1 font-mono text-[0.68rem] tracking-[0.14em] text-signal-ink no-underline hover:underline hover:underline-offset-4"
-      >
-        {action.label}
-        <span
-          aria-hidden="true"
-          class="inline-block transition-transform group-hover:translate-x-0.5"
+    {/* The action slot keeps a constant height so the mark sits at the same
+        place whether a state has a next step or not. */}
+    <div class="mt-5 flex h-5 items-center justify-center">
+      {action && (
+        <a
+          href={action.href}
+          class="group inline-flex items-center gap-1 font-mono text-[0.68rem] tracking-[0.14em] text-signal-ink no-underline hover:underline hover:underline-offset-4"
         >
-          →
-        </span>
-      </a>
-    )}
+          {action.label}
+          <span
+            aria-hidden="true"
+            class="inline-block transition-transform group-hover:translate-x-0.5"
+          >
+            →
+          </span>
+        </a>
+      )}
+    </div>
   </div>
 )}

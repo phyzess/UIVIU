@@ -56,6 +56,10 @@ offers its own next step:
 | Archive empty    | 还没有留下记录。         | 查看全部文章 → `/notes/` |
 | Search: no match | 没有找到符合条件的结果。 | 查看全部文章 → `/notes/` |
 
+The action row keeps a fixed height even when a state has no next step, so the
+mark, title and hint sit at the same vertical position on every page and the
+layout does not jump when moving between Notes, Archive and a category.
+
 Search keeps the typed query in the input, hides the now-duplicate status line
 visually while keeping it as the `aria-live` region, and shows an explicit
 error (never an empty state) when Pagefind itself fails. Never add an
