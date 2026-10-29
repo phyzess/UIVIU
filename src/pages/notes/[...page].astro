@@ -1,0 +1,30 @@
+---
+import type { PaginateFunction } from "astro";
+
+import Pagination from "../../components/Pagination.astro";
+import PostIndexPage from "../../components/PostIndexPage.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getPublishedPosts } from "../../lib/posts";
+
+export async function getStaticPaths({ paginate }: { paginate: PaginateFunction }) {
+  const posts = await getPublishedPosts();
+
+  return paginate(posts, { pageSize: 10 });
+}
+
+const { page } = Astro.props;
+---
+
+<BaseLayout title="Notes" description="UIVIU 的全部已发布文章，按时间从新到旧。">
+  <PostIndexPage
+    eyebrow="Notes"
+    title="全部文章"
+    headingId="notes-title"
+    posts={page.data}
+    emptyText="还没有文章。"
+  >
+    <Fragment slot="intro">{page.total} 篇已发布文章，按时间从新到旧。</Fragment>
+  </PostIndexPage>
+
+  <Pagination page={page} />
+</BaseLayout>

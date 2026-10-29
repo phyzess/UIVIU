@@ -27,10 +27,14 @@ utilities (`bg-paper`, `text-ink`, `border-rule`, …):
 Use it for markers, underlines, focus rings and fills; small accent text uses
 `--color-signal-ink`. Category pills are 5.1–5.6:1 on their soft backgrounds.
 
-Fonts: `--font-display` (serif stack, Newsreader first if ever self-hosted),
-`--font-sans` (system UI plus CJK stack), `--font-mono` (JetBrains Mono if
-available, otherwise system mono). No webfont is downloaded today; adding one
-requires a self-hosted subset and a measured reason.
+Fonts: Newsreader 400 (latin subset, 22 KB woff2) is self-hosted through
+`@fontsource/newsreader` and preloaded in `BaseLayout`; `--font-display` falls
+back to Iowan/Palatino/Songti for CJK. `--font-sans` is the system UI plus CJK
+stack, `--font-mono` prefers JetBrains Mono. Weight 400 only: display text is
+never bold, so a second weight is not downloaded. Italic is not shipped either.
+
+Pagination (Notes and category pages) is text only: `1 / 3` on the left,
+previous/next links on the right, one hairline above. No boxes or buttons.
 
 ## Homepage hierarchy
 

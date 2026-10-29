@@ -1,56 +1,29 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { CONTENT_DIRECTIONS_LABEL, CORE_CONCEPT_ZH } from "../lib/site";
+import { getEntry, render } from "astro:content";
 
-const directions = [
-  { key: "LIFE", text: "生活记录与个人经历。" },
-  { key: "THOUGHTS", text: "想法、观察与思考。" },
-  { key: "CODE", text: "技术分享、编程实践与工程经验。" },
-];
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const about = await getEntry("pages", "about");
+
+if (!about) {
+  throw new Error("Missing src/content/pages/about.md");
+}
+
+const { Content } = await render(about);
+const { title, description } = about.data;
 ---
 
-<BaseLayout title="关于" description="UIVIU 是什么，记录什么，以及它为什么长这样。">
-  <section class="max-w-[42rem] py-14 md:py-20" aria-labelledby="about-title">
-    <p class="font-mono text-[0.7rem] tracking-[0.28em] text-ink-soft uppercase">About</p>
-    <h1 id="about-title" class="mt-5 font-display text-4xl leading-tight md:text-5xl">
-      关于
-    </h1>
+<BaseLayout title={title} description={description}>
+  <article class="max-w-[42rem] py-14 md:py-20">
+    <header>
+      <p class="font-mono text-[0.68rem] tracking-[0.28em] text-ink-soft uppercase">
+        About
+      </p>
+      <h1 class="mt-5 font-display text-3xl leading-tight md:text-4xl">{title}</h1>
+    </header>
 
     <div class="post-body mt-10">
-      <p>
-        UIVIU 是一个个人博客，用来记录代码、生活与思考。它不追逐更新频率，也不
-        打算把每件事都说得过分严肃。
-      </p>
-
-      <h2>记录什么</h2>
-      <p>内容只有三个方向：{CONTENT_DIRECTIONS_LABEL}。</p>
-      <ul>
-        {directions.map((direction) => (
-          <li>
-            <strong>{direction.key}</strong>：{direction.text}
-          </li>
-        ))}
-      </ul>
-
-      <h2>怎么做的</h2>
-      <p>
-        页面在构建时全部生成，产物是一组 HTML、CSS 和少量 JavaScript。文章就是 仓库里的
-        Markdown 文件，写完之后提交即可。
-      </p>
-      <p>
-        没有数据库，没有账号系统，没有评论区，也没有统计脚本。少做一点，是为了
-        让文章本身更清楚。
-      </p>
-
-      <h2>一个对称的非必要结构</h2>
-      <p>
-        {CORE_CONCEPT_ZH}——这句话解释了排版上的很多选择：栏宽与留白成对出现，
-        分隔线细到几乎看不见，编号和分类标签共用同一套字距。
-      </p>
-      <p>它不服务于任何指标，只让长时间阅读舒服一点。</p>
-
-      <h2>署名</h2>
-      <p>由 phyzess 维护。站点代码以 MIT 许可证发布，文章内容版权归作者所有。</p>
+      <Content />
     </div>
-  </section>
+  </article>
 </BaseLayout>

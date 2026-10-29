@@ -1,0 +1,51 @@
+---
+import type { PaginateFunction } from "astro";
+
+import Pagination from "../../../components/Pagination.astro";
+import PostIndexPage from "../../../components/PostIndexPage.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getPublishedPosts } from "../../../lib/posts";
+import { CATEGORIES, CATEGORY_META, isCategory } from "../../../lib/taxonomy";
+
+export async function getStaticPaths({ paginate }: { paginate: PaginateFunction }) {
+  const posts = await getPublishedPosts();
+
+  return CATEGORIES.flatMap((category) =>
+    paginate(
+      posts.filter((post) => post.data.category === category),
+      { params: { category }, pageSize: 10 },
+    ),
+  );
+}
+
+const raw = Astro.params.category;
+const { page } = Astro.props;
+
+if (!raw || !isCategory(raw)) {
+  throw new Error(`Unknown category: ${raw}`);
+}
+
+const meta = CATEGORY_META[raw];
+---
+
+<BaseLayout title={meta.label} description={`UIVIU 中 ${meta.label} 分类的全部文章。`}>
+  <PostIndexPage
+    eyebrow="Category"
+    title={meta.label}
+    headingId="category-title"
+    posts={page.data}
+    emptyText="这个分类还没有文章。"
+  >
+    <Fragment slot="intro">
+      {page.total} 篇已发布文章。
+      <a
+        href="/notes/"
+        class="ml-1 text-ink underline decoration-rule underline-offset-4 hover:decoration-signal"
+      >
+        查看全部
+      </a>
+    </Fragment>
+  </PostIndexPage>
+
+  <Pagination page={page} />
+</BaseLayout>

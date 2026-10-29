@@ -1,0 +1,46 @@
+---
+import type { Page } from "astro";
+
+interface Props {
+  page: Page<unknown>;
+}
+
+const { page } = Astro.props;
+const { currentPage, lastPage, url } = page;
+
+// Astro builds pagination URLs without a trailing slash; the site uses
+// directory-style URLs everywhere, so normalise before rendering.
+const withSlash = (href: string) => (href.endsWith("/") ? href : `${href}/`);
+
+const linkClass =
+  "text-ink no-underline underline decoration-rule underline-offset-4 transition-colors hover:decoration-signal";
+const disabledClass = "text-ink-faint";
+---
+
+{lastPage > 1 && (
+  <nav
+    aria-label="分页"
+    class="mt-4 flex items-center justify-between gap-4 border-t border-rule pt-5 font-mono text-[0.68rem] tracking-[0.14em] text-ink-soft"
+  >
+    <span class="tabular-nums">
+      {currentPage} / {lastPage}
+    </span>
+
+    <span class="flex items-center gap-6">
+      {url.prev ? (
+        <a href={withSlash(url.prev)} rel="prev" class={linkClass}>
+          上一页
+        </a>
+      ) : (
+        <span class={disabledClass}>上一页</span>
+      )}
+      {url.next ? (
+        <a href={withSlash(url.next)} rel="next" class={linkClass}>
+          下一页 →
+        </a>
+      ) : (
+        <span class={disabledClass}>下一页 →</span>
+      )}
+    </span>
+  </nav>
+)}

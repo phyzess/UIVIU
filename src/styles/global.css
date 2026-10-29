@@ -1,3 +1,5 @@
+/* Self-hosted serif: latin 400 only (22 KB woff2), display=swap. */
+@import "@fontsource/newsreader/latin-400.css";
 @import "tailwindcss";
 
 /*

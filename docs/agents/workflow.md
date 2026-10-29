@@ -20,15 +20,28 @@
   `ERR_PNPM_IGNORED_BUILDS`. Approve a package explicitly:
   `allowBuilds: { package-name: true }`. `simple-git-hooks` is approved because
   it registers the Git hooks.
-- **The registry is a local mirror.** This machine can only reach
-  `https://mirrors.cloud.tencent.com/npm/` (npmjs and npmmirror are blocked) and
-  large platform binaries arrive at ~35 KB/s. The raised `fetchTimeout` prevents
-  pnpm from aborting mid-download and silently dropping native optional
-  dependencies (which later fails as `Cannot find native binding`, e.g.
+- **The registry is local, not committed.** `.npmrc` is git-ignored and holds a
+  local mirror for this machine; the repository assumes the default npm
+  registry, so CI and other clones need no override. See `.npmrc` on disk for
+  the current host. Large platform binaries can arrive slowly; the raised
+  `fetchTimeout` in `pnpm-workspace.yaml` prevents pnpm from aborting mid
+  download and silently dropping native optional dependencies (which later
+  fails as `Cannot find native binding`, e.g.
   `@rolldown/binding-darwin-arm64`).
 - If a native binding is missing after a network hiccup, remove `node_modules`
   and run `pnpm install` again (a plain `install` reuses the store). Avoid
   `--force`: it re-downloads every platform's binaries.
+
+## Local Node vs pinned Node
+
+CI uses `.node-version` (24.20.0, LTS) while a local `mise` shell may resolve a
+newer Current release through PATH (26.x here). Astro only requires
+`>=22.23.4`, so both work, but "green locally, red in CI" stays possible for
+runtime-dependent code. Before a release, run the gate under the pinned version:
+
+```bash
+mise exec node@24.20.0 -- pnpm verify
+```
 
 ## Commands
 
@@ -70,8 +83,9 @@ Hooks never run a build; CI is the authority. Reinstall after cloning with
 install with `--frozen-lockfile`, then check, lint, format check, test, build.
 No check may be removed or skipped to make it green.
 
-Open hardening item: third-party actions are referenced by tag, not by commit
-SHA. Pin them before treating CI as a security boundary.
+The three third-party actions are pinned to reviewed commit SHAs
+(`actions/checkout` v7.0.1, `pnpm/action-setup` v6.1.0, `actions/setup-node`
+v7.1.0); the tag after each SHA is only a comment. Update both together.
 
 ## Commits
 
@@ -101,7 +115,12 @@ pnpm preview        # serves dist/, including /pagefind/
 
 Only the post article carries `data-pagefind-body`, so navigation, footer,
 archive, about and the table of contents are not indexed, and drafts never
-reach the index because they are never built. `dist/pagefind/` is build output
+reach the index because they are never built.
+
+Caveat: Pagefind only honours that rule while at least one page has the
+attribute. With zero published posts it falls back to indexing every page
+(navigation is skipped automatically), so a search on an empty blog can match
+chrome text. The behaviour corrects itself with the first post. `dist/pagefind/` is build output
 and is not committed.
 
 ## Deployment

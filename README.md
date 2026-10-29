@@ -50,8 +50,8 @@ pnpm dev        # http://localhost:4321
 
 ```text
 src/
-  components/   SiteHeader, SiteFooter, Hero, PostList, PostListItem, PostIndexPage, CategoryTag,
-                Sidebar, TableOfContents, ReadingProgress
+  components/   SiteHeader, SiteFooter, Hero, PostList, PostListItem, PostIndexPage,
+                Pagination, CategoryTag, Sidebar, TableOfContents, ReadingProgress
   content/      posts/*.md
   layouts/      BaseLayout, PostLayout
   lib/          site.ts — brand copy in one place
@@ -68,7 +68,8 @@ strings are requirements, not placeholders.
 ## Writing posts
 
 A post is one Markdown file in `src/content/posts/`; the file name becomes the
-slug, so `/posts/about-this-site/` comes from `about-this-site.md`.
+slug, so `hello-uiviu.md` becomes `/posts/hello-uiviu/`. The about page is
+content too: edit `src/content/pages/about.md`.
 
 ```yaml
 ---
@@ -76,14 +77,14 @@ title: "这个站点如何工作"
 description: "一句话说明这篇文章在讲什么。"
 pubDate: 2026-10-28
 updatedDate: null
-tags:
-  - meta
+category: code
 draft: false
 ---
 ```
 
-`title`, `description`, `pubDate`, `tags` and `draft` are required and validated
-at build time. `draft` must be written explicitly: drafts never appear in
+`title`, `description`, `pubDate`, `category` and `draft` are required and
+validated at build time. `category` is one of `life`, `thoughts`, `code` and
+drives the pills, sidebar counts and `/categories/<category>/`. `draft` must be written explicitly: drafts never appear in
 listings or generate pages, not even in `astro dev`. The full contract, including
 slug and image rules, is in [`docs/agents/content.md`](docs/agents/content.md).
 
@@ -103,8 +104,12 @@ so navigation, footer and archive text stay out, and drafts never reach the
 index because they are never built. `dist/pagefind/` is build output and is not
 committed.
 
-The feed is at `/rss.xml` (linked from every page and the footer) and the
-sitemap is `/sitemap-index.xml`. Both are generated from published posts only.
+The feed is at `/rss.xml` (announced in every page head) and the sitemap is
+`/sitemap-index.xml`. Both are generated from published posts only. `/notes/`
+paginates at 10 posts per page, and category pages paginate the same way.
+
+Typography: Newsreader 400 (latin, 22 KB woff2) is self-hosted and preloaded;
+Chinese text falls back to the system serif stack.
 
 ## Deployment (Cloudflare Workers static assets)
 

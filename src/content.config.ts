@@ -15,10 +15,19 @@ const posts = defineCollection({
     description: z.string().trim().min(10),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().nullable().optional(),
-    tags: z.array(z.string().trim().min(1)).default([]),
     category: z.enum(CATEGORIES),
     draft: z.boolean(),
   }),
 });
 
-export const collections = { posts };
+/** Standalone pages that are edited like posts, e.g. the about page. */
+const pages = defineCollection({
+  loader: glob({ base: "./src/content/pages", pattern: "**/*.md" }),
+  schema: z.object({
+    title: z.string().trim().min(1),
+    description: z.string().trim().min(10),
+    updatedDate: z.coerce.date().nullable().optional(),
+  }),
+});
+
+export const collections = { posts, pages };

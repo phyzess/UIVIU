@@ -1,9 +1,11 @@
 ---
 import type { MarkdownHeading } from "astro";
 
+import CategoryTag from "../components/CategoryTag.astro";
 import ReadingProgress from "../components/ReadingProgress.astro";
 import TableOfContents from "../components/TableOfContents.astro";
 import { type Post } from "../lib/posts";
+import { estimateReadingMinutes } from "../lib/reading-time";
 import { formatPostDate, formatPostDateLong } from "../lib/post-utils";
 import BaseLayout from "./BaseLayout.astro";
 
@@ -13,9 +15,10 @@ interface Props {
 }
 
 const { post, headings } = Astro.props;
-const { title, description, pubDate, updatedDate, tags } = post.data;
+const { title, description, pubDate, updatedDate, category } = post.data;
 const published = formatPostDate(pubDate);
 const updated = updatedDate ? formatPostDate(updatedDate) : null;
+const minutes = post.body ? estimateReadingMinutes(post.body) : null;
 ---
 
 <BaseLayout title={title} description={description} ogType="article">
@@ -23,27 +26,31 @@ const updated = updatedDate ? formatPostDate(updatedDate) : null;
 
   <article class="py-14 md:py-20" data-pagefind-body>
     <header class="max-w-[42rem]">
-      <p class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[0.7rem] tracking-[0.2em] text-ink-soft uppercase">
-        <time datetime={published}>{formatPostDateLong(pubDate)}</time>
-        {updated && <span aria-hidden="true">·</span>}
-        {updated && <span>更新于 {updated}</span>}
-      </p>
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        <time
+          datetime={published}
+          class="font-mono text-[0.68rem] tracking-[0.04em] text-ink-soft"
+        >
+          {formatPostDateLong(pubDate)}
+        </time>
+        <CategoryTag category={category} />
+        {minutes !== null && (
+          <span class="font-mono text-[0.68rem] tracking-[0.04em] text-ink-soft">
+            {minutes} min read
+          </span>
+        )}
+      </div>
 
-      <h1 class="mt-6 font-display text-4xl leading-tight text-balance [overflow-wrap:anywhere] md:text-5xl">
+      <h1 class="mt-4 font-display text-3xl leading-[1.35] text-balance [overflow-wrap:anywhere] md:text-4xl">
         {title}
       </h1>
 
-      <p class="mt-5 text-base leading-relaxed text-ink-soft">{description}</p>
+      <p class="mt-4 text-sm leading-[1.9] text-ink-soft">{description}</p>
 
-      {tags.length > 0 && (
-        <ul
-          class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.65rem] tracking-[0.18em] text-ink-soft uppercase"
-          aria-label="标签"
-        >
-          {tags.map((tag) => (
-            <li>{tag}</li>
-          ))}
-        </ul>
+      {updated && (
+        <p class="mt-2 font-mono text-[0.68rem] tracking-[0.04em] text-ink-soft">
+          更新于 {updated}
+        </p>
       )}
     </header>
 

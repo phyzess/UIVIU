@@ -4,11 +4,18 @@ The collection is defined in `src/content.config.ts` and queried through
 `src/lib/posts.ts`. `getPublishedPosts()` is the only entry point pages use; it
 sorts newest first and drops drafts.
 
-## Where posts live
+## Where content lives
 
 ```text
 src/content/posts/<slug>.md      # one Markdown file per post
+src/content/pages/about.md       # standalone pages, rendered at /about/
 ```
+
+## About the about page
+
+`/about/` is not hardcoded: it renders `src/content/pages/about.md` (title and
+description in frontmatter, the rest is Markdown). Edit that file to change the
+page; no template change is needed.
 
 Slugs are lowercase with hyphens. The slug is derived from the file name and must
 stay stable: renaming a post changes its URL, so rename deliberately. Titles can
@@ -22,21 +29,18 @@ title: "Hello, UIVIU"
 description: "一篇用于验证写作流程的示例文章。"
 pubDate: 2026-10-28
 updatedDate: null
-tags:
-  - meta
 category: thoughts
 draft: true
 ---
 ```
 
-Required: `title`, `description`, `pubDate`, `tags`, `category`, `draft`.
+Required: `title`, `description`, `pubDate`, `category`, `draft`.
 Optional: `updatedDate`.
 
 Validation rules:
 
 - `title` and `description` must be meaningful, not single placeholder words.
 - `pubDate` and `updatedDate` must be valid dates; posts sort by `pubDate` desc.
-- `tags` may be empty, and empty tags must not break layout.
 - `draft` must be an explicit boolean in every post. Frontmatter is parsed, not
   guessed.
 - `category` is one of `life`, `thoughts`, `code` and drives the homepage pills,
