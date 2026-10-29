@@ -3,6 +3,9 @@ import { describe, expect, it } from "vitest";
 import {
   BRAND_HEADLINE_EN,
   BRAND_SUBTITLE_ZH,
+  BRAND_SUBTITLE_ZH_CLAUSE_1,
+  BRAND_SUBTITLE_ZH_CLAUSE_2,
+  BRAND_SUBTITLE_ZH_CLAUSE_3,
   BRAND_SUBTITLE_ZH_LINE_1,
   BRAND_SUBTITLE_ZH_LINE_2,
   CONTENT_DIRECTIONS,
@@ -35,6 +38,13 @@ describe("brand assets", () => {
       BRAND_SUBTITLE_ZH,
     );
     expect(BRAND_SUBTITLE_ZH_LINE_1.endsWith("，")).toBe(true);
+    expect(
+      `${BRAND_SUBTITLE_ZH_CLAUSE_1}${BRAND_SUBTITLE_ZH_CLAUSE_2}${BRAND_SUBTITLE_ZH_CLAUSE_3}`,
+    ).toBe(BRAND_SUBTITLE_ZH);
+    expect(BRAND_SUBTITLE_ZH_CLAUSE_1 + BRAND_SUBTITLE_ZH_CLAUSE_2).toBe(
+      BRAND_SUBTITLE_ZH_LINE_1,
+    );
+    expect(BRAND_SUBTITLE_ZH_CLAUSE_3).toBe(BRAND_SUBTITLE_ZH_LINE_2);
   });
 
   it("keeps the content introduction verbatim", () => {

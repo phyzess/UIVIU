@@ -8,18 +8,25 @@
 
 export const SITE_NAME = "UIVIU";
 
-/** English headline. Rendered as the English expression of the brand. */
+/**
+ * English headline. Not rendered on the homepage (the Chinese slogan is the only
+ * hero statement); the feed description and the share-card alt text use it.
+ */
 export const BRAND_HEADLINE_EN =
   "A Rigorous Derivation of Something Entirely Useless, Yet Perfectly Symmetrical.";
 
 /**
- * Chinese subtitle, split at its comma so the homepage can break it the way the
- * design does. `BRAND_SUBTITLE_ZH` is the single canonical string; the two
- * halves exist only for rendering and must always rejoin to it.
+ * Chinese subtitle, split at its commas so the homepage can break it on
+ * semantic boundaries: 2 lines on `md` (clauses 1+2, then 3) and 3 lines below.
+ * `BRAND_SUBTITLE_ZH` stays the single canonical string; every part exists only
+ * for rendering and must rejoin to it.
  */
+export const BRAND_SUBTITLE_ZH_CLAUSE_1 = "经过严谨的非严谨推导，";
+export const BRAND_SUBTITLE_ZH_CLAUSE_2 = "最终得到一个没有实际用途，";
+export const BRAND_SUBTITLE_ZH_CLAUSE_3 = "但看起来很对称的结果。";
 export const BRAND_SUBTITLE_ZH_LINE_1 =
-  "经过严谨的非严谨推导，最终得到一个没有实际用途，";
-export const BRAND_SUBTITLE_ZH_LINE_2 = "但看起来很对称的结果。";
+  BRAND_SUBTITLE_ZH_CLAUSE_1 + BRAND_SUBTITLE_ZH_CLAUSE_2;
+export const BRAND_SUBTITLE_ZH_LINE_2 = BRAND_SUBTITLE_ZH_CLAUSE_3;
 export const BRAND_SUBTITLE_ZH = BRAND_SUBTITLE_ZH_LINE_1 + BRAND_SUBTITLE_ZH_LINE_2;
 
 /** Content introduction. Explains what the blog covers; not a subtitle. */

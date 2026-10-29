@@ -80,17 +80,18 @@ plain and never add a joke that breaks the tone.
 The order is fixed and must survive every layout change:
 
 1. `UIVIU` — small, letterspaced, the page `h1`.
-2. English headline — serif, muted, capped at 29.5rem on `md` so it breaks
-   after "Useless," (measured against the self-hosted Newsreader metrics).
-3. Chinese subtitle — full string, never truncated, broken at its comma on `md`.
+2. Chinese slogan — the single brand statement, one step smaller than the name.
 
-No decorative rule sits under the subtitle; the post list follows after plain
-whitespace.
+The slogan breaks on its commas: clauses 1+2 then 3 on `md` (two lines), and one
+clause per line below it (three lines), so no word is split in half. No
+decorative rule sits under it; the post list follows after plain whitespace.
 
-The content introduction and `LIFE · THOUGHTS · CODE` do not appear in the hero.
-The directions live only in the footer. Never swap the Chinese subtitle with the
-content introduction, never move the subtitle into the footer or the about page,
-and never shorten it to fit: fix the measure, wrapping or spacing instead.
+The hero carries no English copy, no content introduction and no directions.
+`LIFE · THOUGHTS · CODE` lives only in the footer. The English headline remains
+in `site.ts` for the feed description and the share-card alt text, but it is not
+rendered on the page. Never swap the slogan with the content introduction, never
+move it into the footer or the about page, and never shorten it to fit: fix the
+measure, wrapping or spacing instead.
 
 ## Homepage layout
 
