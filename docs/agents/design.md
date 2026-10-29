@@ -39,7 +39,9 @@ The order is fixed and must survive every layout change:
 1. `UIVIU` — small, letterspaced, the page `h1`.
 2. English headline — serif, muted, generous measure.
 3. Chinese subtitle — full string, never truncated, broken at its comma on `md`.
-4. A short hairline, then the post list.
+
+No decorative rule sits under the subtitle; the post list follows after plain
+whitespace.
 
 The content introduction and `LIFE · THOUGHTS · CODE` do not appear in the hero.
 The directions live only in the footer. Never swap the Chinese subtitle with the
