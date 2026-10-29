@@ -16,4 +16,6 @@ fetchRetryMaxtimeout: 600000
 # register the git hooks; allow that one package explicitly.
 # https://pnpm.io/settings/build#allowbuilds
 allowBuilds:
+  esbuild: true
   simple-git-hooks: true
+  workerd: true

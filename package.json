@@ -9,6 +9,7 @@
     "search:index": "pagefind --site dist",
     "build": "pnpm build:astro && pnpm search:index",
     "preview": "astro preview",
+    "preview:worker": "wrangler dev",
     "astro": "astro",
     "check": "astro check",
     "lint": "oxlint",
@@ -18,6 +19,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "verify": "pnpm check && pnpm lint && pnpm format:check && pnpm test && pnpm build",
+    "deploy": "pnpm build && wrangler deploy",
     "postinstall": "simple-git-hooks"
   },
   "dependencies": {
@@ -35,17 +37,18 @@
     "pagefind": "^1.5.2",
     "simple-git-hooks": "^2.14.0",
     "typescript": "^6.0.3",
-    "vitest": "^5.0.5"
+    "vitest": "^5.0.5",
+    "wrangler": "^4.154.0"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"
   },
   "lint-staged": {
-    "*.{js,mjs,cjs,ts,mts,cts,json,jsonc,css,md,yaml,yml}": [
+    "*.{js,mjs,cjs,ts,mts,cts}": [
       "oxlint --fix",
       "oxfmt --write"
     ],
-    "*.astro": [
+    "*.{json,jsonc,css,md,yaml,yml,astro}": [
       "oxfmt --write"
     ]
   },

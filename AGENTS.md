@@ -61,6 +61,7 @@ src/
   content.config.ts — posts collection schema
 tests/unit/     Vitest unit tests
 docs/agents/    Agent-facing documentation
+wrangler.jsonc  Cloudflare Workers static assets config (dist/, 404-page)
 ```
 
 ## Commands
@@ -68,7 +69,8 @@ docs/agents/    Agent-facing documentation
 ```bash
 pnpm dev             # dev server; Astro 7 can run it in the background
 pnpm build           # astro build → dist/
-pnpm preview         # preview the build
+pnpm preview         # preview the build (astro preview)
+pnpm preview:worker  # preview through wrangler dev (Workers assets)
 pnpm check           # astro check (types + template diagnostics)
 pnpm lint            # oxlint
 pnpm format          # oxfmt --write
@@ -94,7 +96,7 @@ deleted at the end of the project):
 | 3     | Content collections, post routes, TOC, reading progress | done    |
 | 4     | Homepage, archive, about, responsive polish             | done    |
 | 5     | Pagefind search, RSS, sitemap, canonical/OG             | done    |
-| 6     | Cloudflare Workers static assets config and docs        | pending |
+| 6     | Cloudflare Workers static assets config and docs        | done    |
 | 7     | Final QA and delivery                                   | pending |
 
 ## Notes for agents

@@ -99,15 +99,40 @@ committed.
 The feed is at `/rss.xml` (linked from every page and the footer) and the
 sitemap is `/sitemap-index.xml`. Both are generated from published posts only.
 
-## Deployment
+## Deployment (Cloudflare Workers static assets)
 
-Not configured yet. The target is Cloudflare Workers static assets serving
-`dist/`, with a custom 404 page and no SSR adapter. See
-[`docs/agents/workflow.md`](docs/agents/workflow.md).
+`wrangler.jsonc` serves `dist/` as static assets, with `not_found_handling:
+"404-page"` and no Worker script or SSR adapter.
 
-`site` in `astro.config.mjs` is currently the placeholder
-`https://uiviu.example.com`. It drives RSS, canonical, Open Graph, the sitemap
-and `public/robots.txt`; replace it with the production domain before deploying.
+Check the build locally first:
+
+```bash
+pnpm verify            # check, lint, format, tests, build + search index
+pnpm preview:worker    # wrangler dev → http://localhost:8787
+```
+
+Then confirm `/`, `/posts/about-this-site/`, an unknown path (custom 404),
+`/rss.xml`, `/sitemap-index.xml` and `/search/` (Pagefind assets) all behave.
+`pnpm exec wrangler deploy --dry-run` validates the config without uploading.
+
+Deploying needs your Cloudflare account and is never done by the project itself:
+
+```bash
+pnpm build
+pnpm exec wrangler login     # once per machine
+pnpm exec wrangler deploy    # uploads dist/ as the `uiviu` Worker
+```
+
+Before the first deploy:
+
+1. Replace the placeholder `site` in `astro.config.mjs` with the production
+   domain, and update `public/robots.txt` to match.
+2. Attach the domain in the Cloudflare dashboard (Workers → `uiviu` → Settings →
+   Domains & Routes). DNS records are yours to change.
+3. Keep `compatibility_date` in `wrangler.jsonc` no later than the installed
+   workerd supports; it is a date, not a version.
+
+Wrangler's local state lives in `.wrangler/`, which is git-ignored.
 
 ## License
 

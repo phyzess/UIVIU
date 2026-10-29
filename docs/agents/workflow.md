@@ -106,12 +106,25 @@ and is not committed.
 
 ## Deployment
 
-Not configured yet (phase 6). The target is Cloudflare Workers static assets with
-`dist/` as the asset directory and `not_found_handling: "404-page"`, without an
-SSR adapter.
+Configured for Cloudflare Workers static assets, not deployed.
 
-`site` in `astro.config.mjs` is a placeholder, `https://uiviu.example.com`: RSS,
-canonical URLs, Open Graph URLs, the sitemap and `public/robots.txt` all derive
-absolute URLs from it. Replace it with the production domain before deploying;
-no other file needs to change. No production deployment, DNS change or remote
-repository creation happens without explicit approval.
+- `wrangler.jsonc` sets `name: "uiviu"`, `assets.directory: "./dist"` and
+  `not_found_handling: "404-page"`. There is no `main` and no adapter, so
+  Cloudflare serves the files directly and returns `dist/404.html` for misses.
+- `compatibility_date` must not be later than the installed workerd supports.
+  Wrangler refuses a future date with `Compatibility date … is in the future and
+  unsupported`; update the date together with wrangler.
+- Local checks that were actually run: `wrangler deploy --dry-run` (reads 35
+  files, uploads nothing) and `wrangler dev --port 8787`, where `/` and the post
+  page return 200, an unknown path returns 404 with the custom page, `/about`
+  redirects 307 to `/about/`, `/rss.xml` and `/sitemap-index.xml` are XML,
+  `/pagefind/pagefind.js` is served, `/search/` returns results and the reading
+  progress bar still tracks scrolling.
+- Commands: `pnpm preview:worker` (wrangler dev), `pnpm exec wrangler deploy`
+  after `pnpm build`. `pnpm deploy` does both. Nothing is uploaded by CI, and no
+  DNS record is changed from this repository.
+
+Before the first deploy the placeholder `site` in `astro.config.mjs`
+(`https://uiviu.example.com`) and `public/robots.txt` must be replaced with the
+production domain; that single config value drives RSS, canonical, Open Graph and
+the sitemap. Production deploys and DNS changes require explicit approval.
