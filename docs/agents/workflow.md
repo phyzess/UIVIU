@@ -253,6 +253,10 @@ Workers Builds settings (Cloudflare dashboard → Worker → Settings → Builds
   filter if the extra builds become noise. If the direct webhook turns out not to
   work, the fallback is a one-step Action in the content repository that only
   POSTs to the hook — the site build stays in Cloudflare.
+  Configured state (2026-10): one hook on `main`, one GitHub `push` webhook on
+  the content repository, both verified end to end — GitHub records the delivery
+  as `200`, Cloudflare produces a deployment within ~4 minutes. The hook URL is
+  the credential; rotate it by creating a new hook and updating the webhook.
 - The Worker name must match `name` in `wrangler.jsonc` (`uiviu`).
 - Node: `.node-version` (`24`, the image's default is 24.22.1); pnpm: the
   `packageManager` field. The image installs dependencies before the build

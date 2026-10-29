@@ -115,17 +115,17 @@ working non-interactively.
 Delivery phases (the local planning document has been removed after the final
 QA):
 
-| Phase | Scope                                                   | Status                                |
-| ----- | ------------------------------------------------------- | ------------------------------------- |
-| 0     | Environment check                                       | done                                  |
-| 1     | Astro skeleton, Tailwind, brand homepage, 404           | done                                  |
-| 2     | Tooling baseline: check, lint, format, test, hooks, CI  | done                                  |
-| 3     | Content collections, post routes, TOC, reading progress | done                                  |
-| 4     | Homepage, archive, about, responsive polish             | done                                  |
-| 5     | Pagefind search, RSS, sitemap, canonical/OG             | done                                  |
-| 6     | Cloudflare Workers static assets config and docs        | done                                  |
-| 7     | Final QA and delivery                                   | done                                  |
-| 8     | Public code / private content split, staging, fixtures  | code ready; Cloudflare switch pending |
+| Phase | Scope                                                   | Status |
+| ----- | ------------------------------------------------------- | ------ |
+| 0     | Environment check                                       | done   |
+| 1     | Astro skeleton, Tailwind, brand homepage, 404           | done   |
+| 2     | Tooling baseline: check, lint, format, test, hooks, CI  | done   |
+| 3     | Content collections, post routes, TOC, reading progress | done   |
+| 4     | Homepage, archive, about, responsive polish             | done   |
+| 5     | Pagefind search, RSS, sitemap, canonical/OG             | done   |
+| 6     | Cloudflare Workers static assets config and docs        | done   |
+| 7     | Final QA and delivery                                   | done   |
+| 8     | Public code / private content split, staging, fixtures  | done   |
 
 ## Notes for agents
 
