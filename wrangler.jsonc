@@ -4,6 +4,14 @@
   // Static assets run no Worker code, so this only needs to be recent. It must
   // not be later than the installed workerd supports (2026-10-28 here).
   "compatibility_date": "2026-10-28",
+  // Custom domains are declarative: a deploy attaches exactly these. Keep the
+  // apex listed, otherwise deploying only `www` detaches the apex.
+  "routes": [
+    { "pattern": "uiviu.me", "custom_domain": true },
+    { "pattern": "www.uiviu.me", "custom_domain": true },
+  ],
+  "workers_dev": true,
+  "preview_urls": true,
   "assets": {
     "directory": "./dist",
     // Serve dist/404.html with a 404 status for unmatched routes.
