@@ -20,11 +20,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      # Writing lives in the private content repository and is staged at build
-      # time. This fails if anything under src/content/ ever becomes tracked.
-      - name: Check content is not tracked
-        run: pnpm content:check
-
       # Reads the pnpm version from the `packageManager` field in package.json.
       # Actions are pinned to commit SHAs on purpose; the tag is only a comment.
       - name: Setup pnpm
@@ -45,12 +40,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Writing lives in the private content repository and is staged at build
+      # time. This fails if anything under src/content/ ever becomes tracked.
+      - name: Check content is not tracked
+        run: pnpm content:check
+
       # Public CI has no access to the private writing repository, so it stages
       # test-only fixtures from tests/fixtures/content/. The staged tree is
       # git-ignored and never deployed; production builds read the real content
       # in Cloudflare through `pnpm build:prod`.
       - name: Stage test content fixtures
         run: pnpm content:sync:fixtures
+
       - name: Type check
         run: pnpm check
 
