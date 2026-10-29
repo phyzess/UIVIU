@@ -6,6 +6,7 @@ the topic file that matches the task:
 - `docs/agents/design.md` — design tokens, typography, layout and accessibility rules.
 - `docs/agents/content.md` — post format, drafts, slugs and images.
 - `docs/agents/workflow.md` — commands, hooks, CI and environment quirks.
+- `docs/agents/backlog.md` — deferred work and why it is deferred.
 
 ## What this project is
 
