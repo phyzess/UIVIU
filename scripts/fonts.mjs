@@ -6,9 +6,10 @@
  *   node scripts/fonts.mjs check    # assert the subsets cover all source copy
  *   node scripts/fonts.mjs ensure   # check, rebuild only when out of date
  *
- * `ensure` is wired into `pnpm dev` / `pnpm build` / `pnpm verify`, so writing a
- * post and pushing is enough: a build notices new glyphs, rebuilds the subsets
- * (sources cached in .fonts-cache/, downloaded once when needed) and continues.
+ * `ensure` is wired into `pnpm dev` / `pnpm build` / `pnpm verify`, and it runs
+ * after the content staging step, so adding copy is enough: a build notices new
+ * glyphs, rebuilds the subsets (sources cached in .fonts-cache/, downloaded once
+ * when needed) and continues.
  *
  * Licensing consequences, both handled here:
  * - OFL fonts with Reserved Font Names, and the IPA-licensed Neo XiHei, must not
@@ -27,6 +28,9 @@ const CACHE = path.join(ROOT, ".fonts-cache");
 const OUT = path.join(ROOT, "public/fonts");
 const MANIFEST = path.join(OUT, "ui-charset.json");
 const SPECIMEN_FREE = true; // the specimen page is gone; scan everything in src/
+// A draft is private and never renders; its characters must not reach the
+// committed subsets (public/fonts/ui-charset.json is public).
+const DRAFT = /^draft:\s*true\s*$/m;
 
 const SOURCES = {
   kai: {
@@ -95,6 +99,7 @@ function requiredChars() {
   for (const file of walk(path.join(ROOT, "src"))) {
     if (SPECIMEN_FREE === false && file.endsWith("type-specimen.astro")) continue;
     const text = fs.readFileSync(file, "utf8");
+    if (DRAFT.test(text)) continue;
     for (const char of text) {
       const code = char.codePointAt(0);
       if (

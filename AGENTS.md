@@ -4,7 +4,7 @@ Entry point for AI agents working in this repository. Read this file first, then
 the topic file that matches the task:
 
 - `docs/agents/design.md` — design tokens, typography, layout and accessibility rules.
-- `docs/agents/content.md` — post format, drafts, slugs and images.
+- `docs/agents/content.md` — post format, drafts, slugs, images and the private content repository.
 - `docs/agents/workflow.md` — commands, hooks, CI and environment quirks.
 - `docs/agents/backlog.md` — deferred work and why it is deferred.
 
@@ -17,6 +17,12 @@ SaaS, CMS or documentation platform.
 Stack: Astro 7 (static output) · TypeScript strict · Tailwind CSS 4 (Vite plugin)
 · Astro Content Collections · Shiki · Pagefind · @astrojs/rss · @astrojs/sitemap
 · Vitest · Oxlint · Oxfmt.
+
+This repository is the public half. Writing — posts, post images and the about
+page — lives in a separate **private** content repository and is copied into the
+git-ignored `src/content/` before a build by `scripts/content.mjs`. The split is
+what lets the code be public without the drafts, notes and writing history being
+public.
 
 ## Brand assets — do not edit, shorten or swap
 
@@ -41,6 +47,12 @@ If copy does not fit, change the layout, measure or spacing — never the copy.
   counts that are not computed from real content.
 - Drafts (`draft: true`) must not appear in listings, archives, post routes, RSS,
   search index or sitemap of a production build.
+- Never commit writing content. `src/content/` is staged build input and is
+  git-ignored; `pnpm content:check` fails if git tracks anything under it. Public
+  CI builds `tests/fixtures/content/` only, production builds read the private
+  repository.
+- The content repository token is a Cloudflare build secret. It never enters this
+  repository, the Worker runtime or client code.
 - No database, auth, comments, CMS backend, SSR adapter or client framework in
   this version. No analytics or tracking scripts without explicit approval.
 - No secrets in the repo. Anything pushed here is meant to be public.
@@ -54,7 +66,7 @@ src/
   components/   SiteHeader (nav only), SiteFooter, Hero, PostList, PostListItem,
                 PostIndexPage, Pagination, EmptyState, CategoryTag, Sidebar,
                 TableOfContents, ReadingProgress
-  content/      posts/*.md (posts), pages/about.md (about page)
+  content/      (git-ignored) staged posts/*.md, post images and pages/about.md
   layouts/      BaseLayout (head, chrome, skip link), PostLayout (article, TOC)
   lib/          site.ts (brand copy), posts.ts (queries), post-utils.ts,
                 taxonomy.ts (categories, counts), reading-time.ts,
@@ -63,7 +75,9 @@ src/
                 categories/[category]/[...page], posts/[...slug], rss.xml.ts
   styles/       global.css — Tailwind import, @theme tokens, .post-body typography
   content.config.ts — posts collection schema
+scripts/        fonts.mjs (subset builder), content.mjs (private content staging)
 tests/unit/     Vitest unit tests
+tests/fixtures/content/  test-only posts and about page for public CI
 docs/agents/    Agent-facing documentation
 wrangler.jsonc  Cloudflare Workers static assets config (dist/, 404-page)
 public/         favicon.svg (mark source), favicon.ico, apple-touch-icon.png,
@@ -85,6 +99,10 @@ pnpm test            # vitest run
 pnpm fonts:ensure    # rebuild subsets only when src/ needs new glyphs (auto in dev/build)
 pnpm fonts:build     # force a rebuild
 pnpm fonts:check     # strict audit that fails instead of rebuilding
+pnpm content:sync    # stage content: --from <path>, --fixtures or --remote
+pnpm content:status  # what a build would see
+pnpm content:check   # fail when git tracks anything under src/content/
+pnpm build:prod      # content:sync:remote → build (Cloudflare's build command)
 pnpm verify          # fonts:ensure → check → lint → format:check → test → build
 ```
 
@@ -97,20 +115,23 @@ working non-interactively.
 Delivery phases (the local planning document has been removed after the final
 QA):
 
-| Phase | Scope                                                   | Status |
-| ----- | ------------------------------------------------------- | ------ |
-| 0     | Environment check                                       | done   |
-| 1     | Astro skeleton, Tailwind, brand homepage, 404           | done   |
-| 2     | Tooling baseline: check, lint, format, test, hooks, CI  | done   |
-| 3     | Content collections, post routes, TOC, reading progress | done   |
-| 4     | Homepage, archive, about, responsive polish             | done   |
-| 5     | Pagefind search, RSS, sitemap, canonical/OG             | done   |
-| 6     | Cloudflare Workers static assets config and docs        | done   |
-| 7     | Final QA and delivery                                   | done   |
+| Phase | Scope                                                   | Status                                |
+| ----- | ------------------------------------------------------- | ------------------------------------- |
+| 0     | Environment check                                       | done                                  |
+| 1     | Astro skeleton, Tailwind, brand homepage, 404           | done                                  |
+| 2     | Tooling baseline: check, lint, format, test, hooks, CI  | done                                  |
+| 3     | Content collections, post routes, TOC, reading progress | done                                  |
+| 4     | Homepage, archive, about, responsive polish             | done                                  |
+| 5     | Pagefind search, RSS, sitemap, canonical/OG             | done                                  |
+| 6     | Cloudflare Workers static assets config and docs        | done                                  |
+| 7     | Final QA and delivery                                   | done                                  |
+| 8     | Public code / private content split, staging, fixtures  | code ready; Cloudflare switch pending |
 
 ## Notes for agents
 
-- Content is authored in Markdown; a Git-based CMS is the preferred future
-  option, and no Git write token may ever reach browser code.
+- Writing is Markdown in the private content repository: `posts/<slug>.md` with
+  images in `posts/<slug>/`, plus `pages/about.md`. This repository renders that
+  content; it never stores it. A Git-based CMS is the preferred future option,
+  and no Git write token may ever reach browser code.
 - When a tool behaves unexpectedly, check the installed version's official docs
   first and record the finding in `docs/agents/workflow.md`.

@@ -6,7 +6,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 const about = await getEntry("pages", "about");
 
 if (!about) {
-  throw new Error("Missing src/content/pages/about.md");
+  throw new Error(
+    "Missing src/content/pages/about.md. Stage the private content first: `pnpm content:sync --from <path to the uiviu-content clone>` (or `pnpm content:sync:fixtures` for a check build).",
+  );
 }
 
 const { Content } = await render(about);

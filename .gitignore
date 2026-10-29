@@ -7,6 +7,10 @@ dist/
 # dependencies
 node_modules/
 
+# staged writing content: assembled from the private content repository by
+# scripts/content.mjs — never committed here
+/src/content/
+
 # full font sources used by scripts/fonts.mjs
 .fonts-cache/
 

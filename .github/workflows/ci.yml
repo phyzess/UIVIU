@@ -40,6 +40,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Public CI has no access to the private writing repository, so it stages
+      # test-only fixtures from tests/fixtures/content/. The staged tree is
+      # git-ignored and never deployed; production builds read the real content
+      # in Cloudflare through `pnpm build:prod`.
+      - name: Stage test content fixtures
+        run: pnpm content:sync:fixtures
       - name: Type check
         run: pnpm check
 

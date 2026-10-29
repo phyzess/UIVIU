@@ -1,21 +1,48 @@
 # Content rules
 
-The collection is defined in `src/content.config.ts` and queried through
+The collections are defined in `src/content.config.ts` and queried through
 `src/lib/posts.ts`. `getPublishedPosts()` is the only entry point pages use; it
 sorts newest first and drops drafts.
 
 ## Where content lives
 
+Writing is private. Posts, post images and the about page live in a separate
+private repository, never in this one:
+
 ```text
-src/content/posts/<slug>.md      # one Markdown file per post
-src/content/pages/about.md       # standalone pages, rendered at /about/
+posts/<slug>.md      # one Markdown file per post
+posts/<slug>/        # images for that post
+pages/about.md       # the about page, rendered at /about/
 ```
+
+`scripts/content.mjs` copies exactly `posts/` and `pages/` into the git-ignored
+`src/content/` before a build. Everything under that path is staged build input,
+not a tracked file:
+
+- `pnpm content:sync --from <path>` (or `UIVIU_CONTENT_DIR=<path>`) for local
+  preview.
+- `pnpm content:sync:fixtures` stages `tests/fixtures/content/` for public CI and
+  for checking the code without the private repository. Fixtures are test
+  material, never writing, and are never deployed.
+- `pnpm build:prod` clones the private repository's `main` with a read-only
+  token; that is how Cloudflare builds the site.
+
+Every sync wipes `src/content/` first, so a deleted post disappears from the next
+build instead of lingering. `.git`, `.github`, dotfiles, symlinks and the content
+repository's own README are not copied.
+
+`pnpm content:status` prints what a build would see, including the content commit
+and how many drafts it is hiding. `pnpm content:check` fails if anything under
+`src/content/` ever becomes tracked by git.
 
 ## About the about page
 
-`/about/` is not hardcoded: it renders `src/content/pages/about.md` (title and
-description in frontmatter, the rest is Markdown). Edit that file to change the
-page; no template change is needed.
+`/about/` is not hardcoded: it renders `pages/about.md` from the content
+repository (title and description in frontmatter, the rest is Markdown). Edit
+that file to change the page; no template change is needed. A build without it
+fails — the page never falls back to a stale copy in this repository.
+
+## Slugs
 
 Slugs are lowercase with hyphens. The slug is derived from the file name and must
 stay stable: renaming a post changes its URL, so rename deliberately. Titles can
@@ -54,25 +81,26 @@ estimate, not analytics.
 ## Drafts
 
 `draft: true` posts are excluded from the homepage list, the archive, the post
-routes, RSS, the Pagefind index and the sitemap of a production build. Queries
-must filter `draft !== true` explicitly instead of relying on a single helper
-being called.
+routes, RSS, the Pagefind index, the sitemap and the font subsets of a production
+build. Queries must filter `draft !== true` explicitly instead of relying on a
+single helper being called.
 
-A draft is not a privacy boundary. Anything in this repository is treated as
-public: private journals and sensitive notes belong in a private repository, not
-in a `draft: true` file here.
+A draft is not a preview mechanism: `astro dev` hides drafts too. To look at one,
+flip its flag locally in the content repository and revert it before pushing; that
+keeps a single code path for production and development.
 
-Drafts are hidden in `astro dev` as well, so there is intentionally no preview
-flag. To look at a draft, flip its `draft` value locally and revert it before
-committing; that keeps a single code path for production and development.
+Because the file lives in the private repository, an unfinished post can be
+committed as `draft: true` without publishing anything: only a build that sees
+`draft: false` can ship it. Published pages are public the moment they deploy, so
+anything that must stay private after publishing does not belong in a post at all.
 
 ## Writing standard
 
 - Markdown only: headings, lists, quotes, tables, links, images, fenced code.
 - Use `##` and deeper inside a post; the page title is the `h1`.
 - Fenced code blocks declare a language so Astro/Shiki can highlight them.
-- Images live beside the post in a resource folder or in `public/`; do not hot
-  link to third-party URLs.
+- Images live beside the post in `posts/<slug>/` inside the content repository
+  and are referenced relatively; do not hot link to third-party URLs.
 - External links open in the same tab by default.
 - Do not invent posts, authors, dates or social accounts to fill the layout. An
   empty list shows an honest empty state.
