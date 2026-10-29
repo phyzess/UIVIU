@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import {
   BRAND_HEADLINE_EN,
   BRAND_SUBTITLE_ZH,
+  BRAND_SUBTITLE_ZH_LINE_1,
+  BRAND_SUBTITLE_ZH_LINE_2,
   CONTENT_DIRECTIONS,
   CONTENT_DIRECTIONS_LABEL,
   CONTENT_INTRO_ZH,
@@ -26,6 +28,13 @@ describe("brand assets", () => {
     expect(BRAND_SUBTITLE_ZH).toBe(
       "经过严谨的非严谨推导，最终得到一个没有实际用途，但看起来很对称的结果。",
     );
+  });
+
+  it("rejoins the rendered subtitle halves into the canonical string", () => {
+    expect(`${BRAND_SUBTITLE_ZH_LINE_1}${BRAND_SUBTITLE_ZH_LINE_2}`).toBe(
+      BRAND_SUBTITLE_ZH,
+    );
+    expect(BRAND_SUBTITLE_ZH_LINE_1.endsWith("，")).toBe(true);
   });
 
   it("keeps the content introduction verbatim", () => {
@@ -54,6 +63,8 @@ describe("copy roles", () => {
     for (const value of [
       BRAND_HEADLINE_EN,
       BRAND_SUBTITLE_ZH,
+      BRAND_SUBTITLE_ZH_LINE_1,
+      BRAND_SUBTITLE_ZH_LINE_2,
       CONTENT_INTRO_ZH,
       CORE_CONCEPT_ZH,
     ]) {

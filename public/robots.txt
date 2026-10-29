@@ -1,5 +1,4 @@
-# TODO(deploy): replace the host with the production domain before deploying.
 User-agent: *
 Allow: /
 
-Sitemap: https://uiviu.example.com/sitemap-index.xml
+Sitemap: https://uiviu.me/sitemap-index.xml

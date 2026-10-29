@@ -13,7 +13,20 @@
   --color-ink: #252525;
   --color-ink-soft: #5f5c56;
   --color-signal: #ff623d;
+  /* Same hue, dark enough for small text (5.07:1 on Paper). Signal itself is
+     reserved for lines, markers and fills. */
+  --color-signal-ink: #b8431d;
   --color-rule: #d8d5cd;
+  /* Decorative only (chevrons, separators); below text contrast on purpose. */
+  --color-ink-faint: #8a8880;
+
+  /* Category colours: low-saturation pairs, 5.1-5.6:1 for the pill text. */
+  --color-life: #3d6a4e;
+  --color-life-soft: #e8efe9;
+  --color-thoughts: #9e4832;
+  --color-thoughts-soft: #f8e7e0;
+  --color-code: #445f7c;
+  --color-code-soft: #e8edf3;
 
   --font-display:
     "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC",

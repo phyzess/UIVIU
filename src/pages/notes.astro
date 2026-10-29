@@ -1,0 +1,33 @@
+---
+import PostListItem from "../components/PostListItem.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getPublishedPosts } from "../lib/posts";
+
+const posts = await getPublishedPosts();
+---
+
+<BaseLayout title="Notes" description="UIVIU 的全部已发布文章，按时间从新到旧。">
+  <section class="py-14 md:py-20" aria-labelledby="notes-title">
+    <header class="max-w-[42rem]">
+      <p class="font-mono text-[0.68rem] tracking-[0.28em] text-ink-soft uppercase">
+        Notes
+      </p>
+      <h1 id="notes-title" class="mt-5 font-display text-3xl leading-tight md:text-4xl">
+        全部文章
+      </h1>
+      <p class="mt-4 text-sm leading-relaxed text-ink-soft">
+        {posts.length} 篇已发布文章，按时间从新到旧。
+      </p>
+    </header>
+
+    {posts.length === 0 ? (
+      <p class="mt-12 text-sm leading-relaxed text-ink-soft">还没有文章。</p>
+    ) : (
+      <ul class="mt-8 max-w-[46rem]">
+        {posts.map((post) => (
+          <PostListItem post={post} headingLevel={2} />
+        ))}
+      </ul>
+    )}
+  </section>
+</BaseLayout>

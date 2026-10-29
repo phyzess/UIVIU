@@ -1,70 +1,35 @@
 ---
+import Hero from "../components/Hero.astro";
+import PostList from "../components/PostList.astro";
+import Sidebar from "../components/Sidebar.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import PostCard from "../components/PostCard.astro";
 import { getPublishedPosts } from "../lib/posts";
-import {
-  BRAND_HEADLINE_EN,
-  BRAND_SUBTITLE_ZH,
-  CONTENT_DIRECTIONS_LABEL,
-  CONTENT_INTRO_ZH,
-  SITE_NAME,
-} from "../lib/site";
 
 const posts = await getPublishedPosts();
+const visible = posts.slice(0, 5);
+const hasMore = posts.length > visible.length;
 ---
 
 <BaseLayout>
-  <section class="pt-16 pb-16 md:pt-24 md:pb-20" aria-labelledby="brand-name">
-    <div class="grid gap-12 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-16">
-      <div>
-        <h1
-          id="brand-name"
-          class="font-display text-6xl leading-none tracking-[0.14em] md:text-7xl"
-        >
-          {SITE_NAME}
-        </h1>
-        <p class="mt-10 max-w-[18rem] border-t border-rule pt-5 font-mono text-[0.7rem] leading-relaxed tracking-[0.22em] text-ink-soft uppercase">
-          {CONTENT_DIRECTIONS_LABEL}
-        </p>
-      </div>
+  <Hero />
 
-      <div class="max-w-[34rem]">
-        <p class="font-display text-2xl leading-snug md:text-[1.75rem]">
-          {BRAND_HEADLINE_EN}
-        </p>
-        <p class="mt-8 border-t border-rule pt-8 text-lg leading-relaxed md:text-xl">
-          {BRAND_SUBTITLE_ZH}
-        </p>
-        <p class="mt-6 text-base leading-relaxed text-ink-soft">{CONTENT_INTRO_ZH}</p>
-      </div>
-    </div>
-  </section>
+  <div class="grid gap-16 pb-4 lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-12 xl:gap-16">
+    <div>
+      <PostList posts={visible} viewAllHref="/notes/" />
 
-  <section class="border-t border-rule pt-10 pb-4" aria-labelledby="recent-posts">
-    <div class="flex items-baseline justify-between gap-4">
-      <h2
-        id="recent-posts"
-        class="font-mono text-[0.7rem] tracking-[0.22em] text-ink-soft uppercase"
-      >
-        Recent
-      </h2>
-      {posts.length > 0 && (
-        <a
-          href="/archive/"
-          class="font-mono text-[0.7rem] tracking-[0.18em] text-ink-soft uppercase underline decoration-rule underline-offset-4 hover:decoration-signal"
-        >
-          全部文章
-        </a>
+      {hasMore && (
+        <p class="mt-10 font-mono text-[0.68rem] tracking-[0.06em] text-ink-soft">
+          显示 {visible.length} 篇文章，共 {posts.length} 篇
+          <a
+            href="/notes/"
+            class="ml-3 text-ink underline decoration-rule underline-offset-4 hover:decoration-signal"
+          >
+            更多文章 →
+          </a>
+        </p>
       )}
     </div>
-    {posts.length > 0 ? (
-      <ul class="mt-6">
-        {posts.slice(0, 5).map((post) => (
-          <PostCard post={post} />
-        ))}
-      </ul>
-    ) : (
-      <p class="mt-8 text-base leading-relaxed text-ink-soft">暂无文章。</p>
-    )}
-  </section>
+
+    <Sidebar posts={posts} />
+  </div>
 </BaseLayout>

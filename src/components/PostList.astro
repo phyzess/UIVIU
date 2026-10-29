@@ -1,0 +1,49 @@
+---
+import PostListItem from "./PostListItem.astro";
+import type { Post } from "../lib/posts";
+
+interface Props {
+  posts: Post[];
+  heading?: string;
+  headingId?: string;
+  viewAllHref?: string;
+}
+
+const {
+  posts,
+  heading = "Latest posts",
+  headingId = "latest-posts",
+  viewAllHref,
+} = Astro.props;
+---
+
+<section aria-labelledby={headingId}>
+  <div class="flex items-baseline justify-between gap-4 border-b border-rule pb-3">
+    <h2
+      id={headingId}
+      class="font-mono text-[0.68rem] tracking-[0.22em] text-ink-soft uppercase"
+    >
+      {heading}
+    </h2>
+    {viewAllHref && (
+      <a
+        href={viewAllHref}
+        class="group font-mono text-[0.68rem] tracking-[0.14em] text-signal-ink no-underline hover:underline hover:underline-offset-4"
+      >
+        View all
+        <span
+          aria-hidden="true"
+          class="ml-0.5 inline-block transition-transform group-hover:translate-x-0.5"
+        >
+          →
+        </span>
+      </a>
+    )}
+  </div>
+
+  <ul>
+    {posts.map((post) => (
+      <PostListItem post={post} />
+    ))}
+  </ul>
+</section>

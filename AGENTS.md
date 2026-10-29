@@ -50,13 +50,15 @@ If copy does not fit, change the layout, measure or spacing — never the copy.
 
 ```text
 src/
-  components/   SiteHeader (wordmark + nav), SiteFooter, PostCard,
-                TableOfContents, ReadingProgress
+  components/   SiteHeader (nav only), SiteFooter, Hero, PostList, PostListItem,
+                CategoryTag, Sidebar, TableOfContents, ReadingProgress
   content/      posts/*.md — Markdown posts with frontmatter
   layouts/      BaseLayout (head, chrome, skip link), PostLayout (article, TOC)
-  lib/          site.ts (brand copy), posts.ts (queries), post-utils.ts, reading-progress.ts
-  pages/        index, archive, search, about, 404, posts/[...slug],
-                rss.xml.ts
+  lib/          site.ts (brand copy), posts.ts (queries), post-utils.ts,
+                taxonomy.ts (categories, counts), reading-time.ts,
+                reading-progress.ts, search.ts
+  pages/        index, notes, archive, search, about, 404,
+                categories/[category], posts/[...slug], rss.xml.ts
   styles/       global.css — Tailwind import, @theme tokens, .post-body typography
   content.config.ts — posts collection schema
 tests/unit/     Vitest unit tests

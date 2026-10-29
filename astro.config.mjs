@@ -3,10 +3,9 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 
-// TODO(deploy): replace with the production domain. RSS, canonical URLs and the
-// sitemap all derive absolute URLs from this value, so nothing else needs to
-// change when the real domain is known.
-const SITE = "https://uiviu.example.com";
+// RSS, canonical URLs, Open Graph URLs, the sitemap and the footer domain all
+// derive from this value.
+const SITE = "https://uiviu.me";
 
 // https://astro.build/config
 export default defineConfig({

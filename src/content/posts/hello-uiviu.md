@@ -5,6 +5,7 @@ pubDate: 2026-10-28
 updatedDate: null
 tags:
   - meta
+category: thoughts
 draft: true
 ---
 

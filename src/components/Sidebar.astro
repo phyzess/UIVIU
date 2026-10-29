@@ -1,0 +1,91 @@
+---
+import type { Post } from "../lib/posts";
+import { CATEGORY_META, countByCategory, countByYear } from "../lib/taxonomy";
+
+interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+const categories = countByCategory(posts);
+const years = countByYear(posts);
+
+const rowClass =
+  "group flex items-center gap-3 py-2.5 text-sm text-ink no-underline transition-colors hover:text-ink/60";
+const countClass = "font-mono text-[0.68rem] text-ink-soft tabular-nums";
+const chevronClass = "text-ink-faint transition-transform group-hover:translate-x-0.5";
+---
+
+<aside aria-label="站点信息" class="mt-16 lg:mt-0">
+  <section aria-labelledby="categories-heading">
+    <h2
+      id="categories-heading"
+      class="font-mono text-[0.68rem] tracking-[0.22em] text-ink-soft uppercase"
+    >
+      Categories
+    </h2>
+    <div class="mt-3 h-px bg-rule" aria-hidden="true"></div>
+
+    <ul class="mt-2">
+      {categories.map(({ category, count }) => (
+        <li>
+          <a href={CATEGORY_META[category].path} class={rowClass}>
+            <span
+              class:list={["size-1.5 rounded-full", CATEGORY_META[category].dotClass]}
+              aria-hidden="true"
+            />
+            <span class="flex-1">{CATEGORY_META[category].label}</span>
+            <span class={countClass}>{count}</span>
+            <span class={chevronClass} aria-hidden="true">
+              ›
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section aria-labelledby="archive-heading" class="mt-12">
+    <h2
+      id="archive-heading"
+      class="font-mono text-[0.68rem] tracking-[0.22em] text-ink-soft uppercase"
+    >
+      Archive
+    </h2>
+    <div class="mt-3 h-px bg-rule" aria-hidden="true"></div>
+
+    <ul class="mt-2">
+      {years.length === 0 ? (
+        <li class="py-2 text-sm text-ink-soft">还没有文章。</li>
+      ) : (
+        years.map((entry) => (
+          <li>
+            <a href={`/archive/#year-${entry.year}`} class={rowClass}>
+              <span class="flex-1 font-mono text-[0.85rem] tracking-[0.02em]">
+                {entry.year}
+              </span>
+              <span class={countClass}>{entry.count}</span>
+              <span class={chevronClass} aria-hidden="true">
+                ›
+              </span>
+            </a>
+          </li>
+        ))
+      )}
+    </ul>
+  </section>
+
+  <div class="mt-12 border-t border-rule pt-6">
+    <p class="text-sm leading-[1.9] text-ink-soft">
+      不定期更新，
+      <br />
+      欢迎常来看看。
+    </p>
+    <a
+      href="/about/"
+      class="mt-3 inline-block text-sm text-ink underline decoration-rule underline-offset-4 hover:decoration-signal"
+    >
+      关于这个站点
+    </a>
+  </div>
+</aside>

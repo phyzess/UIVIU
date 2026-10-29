@@ -1,0 +1,19 @@
+---
+import { CATEGORY_META, type Category } from "../lib/taxonomy";
+
+interface Props {
+  category: Category;
+}
+
+const { category } = Astro.props;
+const meta = CATEGORY_META[category];
+---
+
+<span
+  class:list={[
+    "inline-flex items-center rounded-full px-2.5 py-0.5 font-mono text-[0.6rem] leading-[1.6] tracking-[0.14em] uppercase",
+    meta.pillClass,
+  ]}
+>
+  {meta.badge}
+</span>

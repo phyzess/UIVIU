@@ -1,39 +1,30 @@
 ---
-import { SITE_NAME } from "../lib/site";
-
 const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
 
 const navItems = [
-  { href: "/", label: "首页" },
-  { href: "/archive/", label: "归档" },
-  { href: "/search/", label: "搜索" },
-  { href: "/about/", label: "关于" },
+  { href: "/", label: "Home" },
+  { href: "/about/", label: "About" },
+  { href: "/notes/", label: "Notes" },
+  { href: "/archive/", label: "Archive" },
 ] as const;
 
 const isActive = (href: string) => path === (href.replace(/\/+$/, "") || "/");
 ---
 
-<header class="border-b border-rule">
-  <div class="mx-auto flex w-full max-w-5xl flex-wrap items-baseline justify-between gap-x-8 gap-y-4 px-6 py-6 md:px-10">
-    <a
-      href="/"
-      class="font-display text-xl leading-none tracking-[0.28em] text-ink no-underline"
-    >
-      {SITE_NAME}
-    </a>
-
+<header class="pt-7 md:pt-9">
+  <div class="mx-auto flex w-full max-w-5xl items-center justify-end gap-6 px-6 sm:gap-8 md:px-10">
     <nav aria-label="主导航">
-      <ul class="flex items-center gap-5 text-sm text-ink-soft">
+      <ul class="flex items-center gap-x-5 text-xs sm:gap-x-8 sm:text-sm">
         {navItems.map((item) => (
           <li>
             <a
               href={item.href}
               aria-current={isActive(item.href) ? "page" : undefined}
               class:list={[
-                "no-underline",
+                "relative inline-block py-1.5 pb-2 no-underline transition-colors",
                 isActive(item.href)
-                  ? "text-ink underline decoration-signal decoration-1 underline-offset-4"
-                  : "hover:text-ink hover:underline hover:decoration-rule hover:underline-offset-4",
+                  ? "text-ink after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-signal"
+                  : "text-ink-soft hover:text-ink",
               ]}
             >
               {item.label}
@@ -42,5 +33,26 @@ const isActive = (href: string) => path === (href.replace(/\/+$/, "") || "/");
         ))}
       </ul>
     </nav>
+
+    <a
+      href="/search/"
+      aria-label="搜索"
+      class="-mr-1 inline-flex size-8 items-center justify-center text-ink-soft no-underline transition-colors hover:text-ink"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m20 20-3.6-3.6"></path>
+      </svg>
+    </a>
   </div>
 </header>

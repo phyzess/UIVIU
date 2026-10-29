@@ -1,0 +1,67 @@
+---
+import CategoryTag from "./CategoryTag.astro";
+import { postPath, type Post } from "../lib/posts";
+import { estimateReadingMinutes } from "../lib/reading-time";
+import { formatPostDate } from "../lib/post-utils";
+
+interface Props {
+  post: Post;
+  /** Archive rows: date and title only, no excerpt, no reading time. */
+  compact?: boolean;
+  /** Heading level for the title; compact rows are not headings. */
+  headingLevel?: 2 | 3;
+}
+
+const { post, compact = false, headingLevel = 3 } = Astro.props;
+const { title, description, pubDate, category } = post.data;
+const published = formatPostDate(pubDate);
+const minutes = post.body ? estimateReadingMinutes(post.body) : null;
+const Heading = `h${headingLevel}` as "h2" | "h3";
+
+const titleLink =
+  "text-ink no-underline transition-colors hover:text-ink/60 [overflow-wrap:anywhere]";
+---
+
+<li class:list={[compact ? "py-2.5" : "py-9 md:py-10"]}>
+  {compact ? (
+    <div class="flex items-baseline gap-4">
+      <time
+        datetime={published}
+        class="w-20 shrink-0 font-mono text-[0.7rem] tracking-[0.04em] text-ink-soft"
+      >
+        {published}
+      </time>
+      <a href={postPath(post)} class:list={["min-w-0 flex-1 text-[0.95rem]", titleLink]}>
+        {title}
+      </a>
+    </div>
+  ) : (
+    <article>
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+        <time
+          datetime={published}
+          class="font-mono text-[0.7rem] tracking-[0.04em] text-ink-soft"
+        >
+          {published}
+        </time>
+        <CategoryTag category={category} />
+      </div>
+
+      <Heading class="mt-3 font-display text-xl leading-[1.5] font-normal md:text-[1.35rem]">
+        <a href={postPath(post)} class:list={[titleLink]}>
+          {title}
+        </a>
+      </Heading>
+
+      <p class="mt-2.5 line-clamp-2 max-w-[40rem] text-[0.95rem] leading-[1.85] text-ink-soft">
+        {description}
+      </p>
+
+      {minutes !== null && (
+        <p class="mt-3.5 font-mono text-[0.68rem] tracking-[0.04em] text-ink-soft">
+          {minutes} min read
+        </p>
+      )}
+    </article>
+  )}
+</li>

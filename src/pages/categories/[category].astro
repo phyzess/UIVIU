@@ -1,0 +1,56 @@
+---
+import PostListItem from "../../components/PostListItem.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getPublishedPosts } from "../../lib/posts";
+import { CATEGORIES, CATEGORY_META, isCategory } from "../../lib/taxonomy";
+
+export function getStaticPaths() {
+  return CATEGORIES.map((category) => ({ params: { category } }));
+}
+
+const { category } = Astro.params;
+
+if (!category || !isCategory(category)) {
+  throw new Error(`Unknown category: ${category}`);
+}
+
+const meta = CATEGORY_META[category];
+const posts = (await getPublishedPosts()).filter(
+  (post) => post.data.category === category,
+);
+---
+
+<BaseLayout title={meta.label} description={`UIVIU 中 ${meta.label} 分类的全部文章。`}>
+  <section class="py-14 md:py-20" aria-labelledby="category-title">
+    <header class="max-w-[42rem]">
+      <p class="font-mono text-[0.68rem] tracking-[0.28em] text-ink-soft uppercase">
+        Category
+      </p>
+      <h1
+        id="category-title"
+        class="mt-5 font-display text-3xl leading-tight md:text-4xl"
+      >
+        {meta.label}
+      </h1>
+      <p class="mt-4 text-sm leading-relaxed text-ink-soft">
+        {posts.length} 篇已发布文章。
+        <a
+          href="/notes/"
+          class="ml-1 text-ink underline decoration-rule underline-offset-4 hover:decoration-signal"
+        >
+          查看全部
+        </a>
+      </p>
+    </header>
+
+    {posts.length === 0 ? (
+      <p class="mt-12 text-sm leading-relaxed text-ink-soft">这个分类还没有文章。</p>
+    ) : (
+      <ul class="mt-8 max-w-[46rem]">
+        {posts.map((post) => (
+          <PostListItem post={post} headingLevel={2} />
+        ))}
+      </ul>
+    )}
+  </section>
+</BaseLayout>
