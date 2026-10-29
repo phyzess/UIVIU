@@ -1,9 +1,12 @@
 ---
+import BrandMark from "../components/BrandMark.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="404" description="这个页面暂时不存在。" noindex>
   <article class="max-w-[42rem] py-16 md:py-24">
+    <BrandMark class="mb-6 size-8" />
+
     <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-rule pb-3">
       <p class="font-mono text-[0.68rem] tracking-[0.28em] text-ink-soft uppercase">
         Field note no. 404

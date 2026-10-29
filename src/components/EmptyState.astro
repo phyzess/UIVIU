@@ -1,4 +1,6 @@
 ---
+import BrandMark from "./BrandMark.astro";
+
 interface Props {
   /** Main line, e.g. `还没有文章。` */
   title: string;
@@ -17,26 +19,7 @@ const { title, hint, action, compact = false } = Astro.props;
   <p class="py-2 text-sm leading-relaxed text-ink-soft">{title}</p>
 ) : (
   <div class="flex min-h-[17rem] flex-col items-center justify-center px-6 py-12 text-center">
-    <svg
-      class="size-7"
-      viewBox="0 0 32 32"
-      fill="none"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path
-        d="M25.5 19.5V6.5H6.5v19h13"
-        stroke="currentColor"
-        stroke-width="2.5"
-        class="text-rule"
-      />
-      <path
-        d="M16 6.5v18"
-        stroke="currentColor"
-        stroke-width="2.5"
-        class="text-signal/30"
-      />
-    </svg>
+    <BrandMark class="size-7" />
 
     <p class="mt-5 text-sm leading-relaxed text-ink">{title}</p>
 

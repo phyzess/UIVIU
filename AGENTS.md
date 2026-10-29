@@ -66,7 +66,8 @@ src/
 tests/unit/     Vitest unit tests
 docs/agents/    Agent-facing documentation
 wrangler.jsonc  Cloudflare Workers static assets config (dist/, 404-page)
-public/         favicon.svg, favicon.ico, apple-touch-icon.png, icon-512.png, og.png
+public/         favicon.svg (mark source), favicon.ico, apple-touch-icon.png,
+                icon-512.png, og.png, brand/uiviu-wordmark.svg
 ```
 
 ## Commands

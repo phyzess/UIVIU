@@ -59,7 +59,8 @@ src/
   pages/        index, notes, archive, search, about, 404,
                 categories/[category], posts/[...slug], rss.xml
   styles/       global.css — Tailwind import and @theme tokens
-public/         favicon.svg, favicon.ico, apple-touch-icon.png, icon-512.png, og.png
+public/         favicon.svg, favicon.ico, apple-touch-icon.png, icon-512.png,
+                og.png, brand/uiviu-wordmark.svg
 tests/unit/     Vitest unit tests
 docs/agents/    Notes for AI agents: design, content, workflow
 ```

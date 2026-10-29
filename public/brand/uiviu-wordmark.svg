@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 82 32" fill="none">
+  <!-- UIVIU wordmark, same geometry as the mark; the last U escapes in red. -->
+  <path d="M4 8v9q0 4 4 4h8q4 0 4-4V8" stroke="#252525" stroke-width="3"/>
+  <path d="M26.5 8v17" stroke="#252525" stroke-width="3"/>
+  <path d="M33 8l8 17 8-17" stroke="#252525" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M55.5 8v17" stroke="#252525" stroke-width="3"/>
+  <path d="M62 8v9q0 4 4 4h8q4 0 4-4V8" stroke="#252525" stroke-width="3"/>
+  <path d="M78 8V4" stroke="#FF623D" stroke-width="3"/>
+</svg>

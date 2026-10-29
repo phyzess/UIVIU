@@ -130,19 +130,39 @@ When in doubt, remove a line before adding one.
   it materially helps screen-reader pronunciation.
 - Keep text contrast at 4.5:1 or better for body copy.
 
-## Mark and icons
+## Mark and wordmark
 
-The mark is a symmetric frame with one corner missing, a signal-coloured axis,
-and — from 48px up — the piece that fell off, sitting just outside the frame.
-It is deliberately deadpan: the structure is not broken, it was simply not put
-back. Do not add gloss, gradients, rounded corners or a second accent.
+The mark is a plain geometric U (ink `#252525`, stroke 2.5 on a 32 grid, ~7.8%
+of the box) whose right stem escapes four units upward in signal `#FF623D`.
+One deviation, nothing else: no second notch, dot, gradient or glow. Read at
+16px it is a U with a small red tick; at 48px the tick reads as the stem
+continuing when it should not.
 
-- `public/favicon.svg` — 16/32px version: frame + axis + corner gap, no loose
-  piece (the dot turns into noise below 48px).
-- `public/favicon.ico` — 16 and 32 from that version, 48 with the piece.
-- `public/apple-touch-icon.png` (180) and `public/icon-512.png` — full version.
-- `public/og.png` — 1200×630 default share card: mark, wordmark, English
-  headline, Chinese subtitle, domain, on Paper.
+The wordmark (`public/brand/uiviu-wordmark.svg`) draws `UIVIU` with the same
+stroke language (3 on a 32-tall grid) and repeats the escape at the end of the
+last U. It is a shipped source asset for print, social and future use — the
+site itself keeps the text wordmark in the header and does **not** display this
+SVG anywhere.
+
+- `public/favicon.svg` is the canonical mark (transparent, no background rect).
+- `src/components/BrandMark.astro` inlines the same geometry so pages can size
+  it; `tests/unit/brand-mark.test.ts` fails if the two drift apart.
+- `public/favicon.ico` carries 16/32/48 (transparent); `apple-touch-icon.png`
+  (180) and `icon-512.png` are paper-backed tiles because iOS and Android
+  composite transparency as black.
+- `public/og.png` is the 1200×630 share card (mark, wordmark, headline,
+  subtitle, domain).
+
+Usage is deliberately narrow: favicon, the 404 field note (32px), and empty
+states (28px). Do not put the mark or the wordmark in the hero, the header, the
+article list, next to headings, in a floating control or in a per-page brand
+block, and do not animate it. `public/brand/uiviu-mark.svg` is intentionally
+absent: the favicon is the mark source, and copying it would only create a
+second file to keep in sync.
+
+Limitation: the SVG is ink-on-transparent, so it is low contrast on a dark
+browser tab strip. The rules forbid baking a background into the icon, so this
+is accepted and documented rather than solved with a paper block.
 
 ## Known gaps
 
