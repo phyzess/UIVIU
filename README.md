@@ -16,7 +16,7 @@
 
 ## 本地运行
 
-需要 Node.js 24.20.0 与 pnpm 12.3.4（见 `.node-version` 和 `package.json`）。
+需要 Node.js 24 与 pnpm 12.3.4（见 `.node-version` 和 `package.json`；GitHub Actions 与 Cloudflare 构建镜像解析到 24.22.1）。
 
 ```bash
 pnpm install

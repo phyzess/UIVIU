@@ -4,7 +4,7 @@
 
 | Tool       | Version source                              | Notes                                                                          |
 | ---------- | ------------------------------------------- | ------------------------------------------------------------------------------ |
-| Node.js    | `.node-version` (24.20.0, Active LTS)       | Astro 7 requires `>=22.23.4`; CI reads the same file                           |
+| Node.js    | `.node-version` (24, Active LTS major)      | Astro 7 requires `>=22.23.4`; CI and Cloudflare resolve it to 24.22.1          |
 | pnpm       | `packageManager` in `package.json` (12.3.4) | CI reads the same field via `pnpm/action-setup`                                |
 | TypeScript | devDependency, `^6.0.3`                     | `@astrojs/check` peer range is `^5 \|\| ^6`; TypeScript 7 is not supported yet |
 | Oxfmt      | devDependency, 0.75.x                       | `.astro` support enabled through `"astro": true`                               |
@@ -34,13 +34,13 @@
 
 ## Local Node vs pinned Node
 
-CI uses `.node-version` (24.20.0, LTS) while a local `mise` shell may resolve a
+CI uses `.node-version` (24, resolved to 24.22.1) while a local `mise` shell may resolve a
 newer Current release through PATH (26.x here). Astro only requires
 `>=22.23.4`, so both work, but "green locally, red in CI" stays possible for
 runtime-dependent code. Before a release, run the gate under the pinned version:
 
 ```bash
-mise exec node@24.20.0 -- pnpm verify
+mise exec node@24 -- pnpm verify
 ```
 
 ## Commands
@@ -305,7 +305,7 @@ Workers Builds settings (Cloudflare dashboard → Worker → Settings → Builds
   as `200`, Cloudflare produces a deployment within ~4 minutes. The hook URL is
   the credential; rotate it by creating a new hook and updating the webhook.
 - The Worker name must match `name` in `wrangler.jsonc` (`uiviu`).
-- Node: `.node-version` (24.20.0; the image's default is 24.22.1); pnpm: the
+- Node: `.node-version` (24; the image resolves it to 24.22.1); pnpm: the
   `packageManager` field. The image installs dependencies before the build
   command and times out at 20 minutes (this build takes 1–2).
 - `wrangler.jsonc` sets `main: worker/index.ts`, `assets.directory: "./dist"`,

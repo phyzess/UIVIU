@@ -3,6 +3,9 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
+  # 180 days, no includeSubDomains, no preload: enough to stop downgrade
+  # attacks while staying reversible if HTTPS ever has to move.
+  Strict-Transport-Security: max-age=15552000
 
 # Hashed build assets: content never changes under the same name.
 /_astro/*
