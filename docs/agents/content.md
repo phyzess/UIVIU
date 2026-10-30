@@ -10,12 +10,18 @@ Writing is private. Posts, post images and the about page live in a separate
 private repository, never in this one:
 
 ```text
-posts/<slug>.md      # one Markdown file per post
-posts/<slug>/        # images for that post
-templates/post.md    # new-post.sh scaffolds a post from this file
-new-post.sh          # creates posts/<slug>.md and an empty posts/<slug>/
-pages/about.md       # the about page, rendered at /about/
+posts/<slug>.md         # a post without images
+posts/<slug>/index.md   # a post with images, colocated with them
+posts/<slug>/*.png      # images for that post
+templates/post.md       # new-post.sh scaffolds a post from this file
+new-post.sh             # creates posts/<slug>.md or posts/<slug>/index.md
+pages/about.md          # the about page, rendered at /about/
 ```
+
+Both post layouts produce the same id and URL, `/posts/<slug>/`: the glob loader
+strips a trailing `index`, so moving a post into its own folder to add images
+never changes a URL. Never keep `posts/<slug>.md` and `posts/<slug>/index.md`
+for the same slug — Astro reports a duplicate id.
 
 `scripts/content.mjs` copies exactly `posts/` and `pages/` into the git-ignored
 `src/content/` before a build. Everything under that path is staged build input,
@@ -30,9 +36,10 @@ not a tracked file:
   token; that is how Cloudflare builds the site.
 
 To start a post in the content repository, run `./new-post.sh <slug>`: it copies
-`templates/post.md`, substitutes the slug and today's date, creates the image
-folder and leaves `draft: true`. The template and the script live outside
-`posts/` and are never copied into the site.
+`templates/post.md`, substitutes the slug and today's date, and leaves
+`draft: true`. Add `--with-assets` to create `posts/<slug>/index.md` plus the
+image folder instead of a plain `posts/<slug>.md`. The template and the script
+live outside `posts/` and are never copied into the site.
 
 Every sync wipes `src/content/` first, so a deleted post disappears from the next
 build instead of lingering. `.git`, `.github`, dotfiles, symlinks and the content
@@ -106,8 +113,17 @@ anything that must stay private after publishing does not belong in a post at al
 - Markdown only: headings, lists, quotes, tables, links, images, fenced code.
 - Use `##` and deeper inside a post; the page title is the `h1`.
 - Fenced code blocks declare a language so Astro/Shiki can highlight them.
-- Images live beside the post in `posts/<slug>/` inside the content repository
-  and are referenced relatively; do not hot link to third-party URLs.
+- Images live in the post folder (`posts/<slug>/`) and are referenced relatively:
+  `./diagram.png` inside a post bundle, `./<slug>/diagram.png` beside a plain
+  `posts/<slug>.md`. Compress before committing — long edge ≤1600, quality 80,
+  under ~300 KB per image; the build converts them to webp and generates
+  responsive sizes. Originals stay out of git. Never hot link to third-party
+  image hosts: a draft's image would be public early and loses build-time
+  optimisation.
+- Video is never committed. A short silent loop may be animated WebP (1–2 MB) or
+  an mp4 under ~5 MB; anything longer is embedded — Cloudflare Stream, or
+  YouTube (`youtube-nocookie.com`) / Bilibili — behind a click-to-load poster
+  stored in the post folder, so the first paint makes no third-party requests.
 - External links open in the same tab by default.
 - Do not invent posts, authors, dates or social accounts to fill the layout. An
   empty list shows an honest empty state.

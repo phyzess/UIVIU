@@ -9,7 +9,7 @@ draft: false
 
 这是构建用的文章样稿，不是站点内容。
 
-![sample](./fixture-published/sample.png)
+![sample](./sample.png)
 
 ## 正文
 

@@ -53,6 +53,9 @@ If copy does not fit, change the layout, measure or spacing — never the copy.
   repository.
 - The content repository token is a Cloudflare build secret. It never enters this
   repository, the Worker runtime or client code.
+- Media follows the post: images live in the post folder in the private
+  repository, and video is embedded (click-to-load) instead of committed. See
+  `docs/agents/content.md` for the size rules.
 - No database, auth, comments, CMS backend, SSR adapter or client framework in
   this version. No analytics or tracking scripts without explicit approval.
 - No secrets in the repo. Anything pushed here is meant to be public.

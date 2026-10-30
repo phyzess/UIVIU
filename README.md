@@ -39,6 +39,8 @@ pnpm dev
 | `pnpm content:check`              | `src/content/` 一旦被 Git 跟踪就失败             |
 | `pnpm build:prod`                 | 读取私有内容后构建，即 Cloudflare 的生产构建命令 |
 
+文章有两种写法：没有素材时是 `posts/<slug>.md`，有图片时是 `posts/<slug>/index.md` 加同目录素材；两种写法的 URL 都是 `/posts/<slug>/`。
+
 写作格式、草稿规则和图片约定见 [内容说明](docs/agents/content.md)；日常写作流程见内容仓库自己的 README。
 
 ## 结构
