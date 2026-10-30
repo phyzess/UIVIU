@@ -10,18 +10,18 @@ do not add decoration that does not serve reading.
 Defined once in `src/styles/global.css` under `@theme`, consumed as Tailwind
 utilities (`bg-paper`, `text-ink`, `border-rule`, …):
 
-| Token                        | Value                 | Use                             |
-| ---------------------------- | --------------------- | ------------------------------- |
-| `--color-paper`              | `#f8f7f2`             | Page background                 |
-| `--color-ink`                | `#252525`             | Body and headings               |
-| `--color-ink-soft`           | `#5f5c56`             | Secondary text (6.2:1 on paper) |
-| `--color-signal`             | `#ff623d`             | Accent lines, markers, fills    |
-| `--color-signal-ink`         | `#b8431d`             | Accent text (5.1:1 on paper)    |
-| `--color-ink-faint`          | `#8a8880`             | Decorative chevrons only        |
-| `--color-rule`               | `#d8d5cd`             | Hairlines and borders           |
-| `--color-life` / `-soft`     | `#3d6a4e` / `#e8efe9` | LIFE pill and dot               |
-| `--color-thoughts` / `-soft` | `#9e4832` / `#f8e7e0` | THOUGHTS pill and dot           |
-| `--color-code` / `-soft`     | `#445f7c` / `#e8edf3` | CODE pill and dot               |
+| Token                | Value     | Use                             |
+| -------------------- | --------- | ------------------------------- |
+| `--color-paper`      | `#f8f7f2` | Page background                 |
+| `--color-ink`        | `#252525` | Body and headings               |
+| `--color-ink-soft`   | `#5f5c56` | Secondary text (6.2:1 on paper) |
+| `--color-signal`     | `#ff623d` | Accent lines, markers, fills    |
+| `--color-signal-ink` | `#b8431d` | Accent text (5.1:1 on paper)    |
+| `--color-ink-faint`  | `#8a8880` | Decorative chevrons only        |
+| `--color-rule`       | `#d8d5cd` | Hairlines and borders           |
+| `--color-life`       | `#3d6a4e` | LIFE dot                        |
+| `--color-thoughts`   | `#9e4832` | THOUGHTS dot                    |
+| `--color-code`       | `#445f7c` | CODE dot                        |
 
 `--color-signal` reaches only ~2.8:1 on paper, so it is never used for small text.
 Use it for markers, underlines, focus rings and fills; small accent text uses

@@ -12,10 +12,8 @@ export type Category = (typeof CATEGORIES)[number];
 export interface CategoryMeta {
   /** Sidebar label. */
   label: string;
-  /** Uppercase label used inside the small pill. */
+  /** Uppercase label of the category link. */
   badge: string;
-  /** Pill classes: low-saturation background with a readable text color. */
-  pillClass: string;
   /** Dot color for the sidebar. */
   dotClass: string;
   path: string;
@@ -25,21 +23,18 @@ export const CATEGORY_META: Record<Category, CategoryMeta> = {
   life: {
     label: "Life",
     badge: "LIFE",
-    pillClass: "bg-life-soft text-life",
     dotClass: "bg-life",
     path: "/categories/life/",
   },
   thoughts: {
     label: "Thoughts",
     badge: "THOUGHTS",
-    pillClass: "bg-thoughts-soft text-thoughts",
     dotClass: "bg-thoughts",
     path: "/categories/thoughts/",
   },
   code: {
     label: "Code",
     badge: "CODE",
-    pillClass: "bg-code-soft text-code",
     dotClass: "bg-code",
     path: "/categories/code/",
   },

@@ -88,9 +88,9 @@ Validation rules:
 - `pubDate` and `updatedDate` must be valid dates; posts sort by `pubDate` desc.
 - `draft` must be an explicit boolean in every post. Frontmatter is parsed, not
   guessed.
-- `category` is one of `life`, `thoughts`, `code` and drives the homepage pills,
-  the sidebar counts and `/categories/<category>/`. It is real metadata: never
-  inferred from a title.
+- `category` is one of `life`, `thoughts`, `code` and drives the category link
+  on every list, the sidebar counts and `/categories/<category>/`. It is real
+  metadata: never inferred from a title.
 
 Reading time on the homepage is estimated from the Markdown body (CJK and Latin
 counted separately, fenced code skipped). It is labelled `N min read` and is an

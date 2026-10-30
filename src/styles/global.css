@@ -55,13 +55,10 @@
   /* Decorative only (chevrons, separators); below text contrast on purpose. */
   --color-ink-faint: #8a8880;
 
-  /* Category colours: low-saturation pairs, 5.1-5.6:1 for the pill text. */
+  /* Category dot colours; labels stay ink or signal-ink. */
   --color-life: #3d6a4e;
-  --color-life-soft: #e8efe9;
   --color-thoughts: #9e4832;
-  --color-thoughts-soft: #f8e7e0;
   --color-code: #445f7c;
-  --color-code-soft: #e8edf3;
 
   /* Brand wordmark only: Newsreader for Latin, Songti for any CJK fallback. */
   --font-display:
