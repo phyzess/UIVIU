@@ -3,7 +3,7 @@ import EmptyState from "../components/EmptyState.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="搜索" description="在 UIVIU 已发布的文章中搜索标题与正文。">
+<BaseLayout title="搜索" description="在 UIVIU 已发布的文章中搜索标题与正文。" noindex>
   <Fragment slot="head">
     {import.meta.env.PROD && <link rel="modulepreload" href="/pagefind/pagefind.js" />}
   </Fragment>

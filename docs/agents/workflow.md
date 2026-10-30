@@ -221,6 +221,10 @@ Only the post article carries `data-pagefind-body`, so navigation, footer,
 archive, about and the table of contents are not indexed, and drafts never
 reach the index because they are never built.
 
+The search page itself is `noindex` and excluded from the sitemap: it is a tool,
+not a document. Both rules live in code — the `noindex` prop in
+`src/pages/search.astro` and the `filter` in `astro.config.mjs`.
+
 Caveat: Pagefind only honours that rule while at least one page has the
 attribute. With zero published posts it falls back to indexing every page
 (navigation is skipped automatically), so a search on an empty blog can match
