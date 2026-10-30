@@ -147,9 +147,11 @@ copyright/license records and compresses with `fontverter`.
 - **GitHub Actions** (`.github/workflows/ci.yml`): the sources are cached, and
   the subsets are regenerated on every run — fast once the cache is warm.
 - **Cloudflare Workers Builds**: the font step needs no system binaries, but the
-  build image must run Node 24 (`NODE_VERSION=24`) and has no `.fonts-cache`, so
-  every build downloads the pinned sources (~35 MB) and regenerates the
-  subsets — roughly 10 seconds on top of the build.
+  build image must run Node (`NODE_VERSION`, read from `.node-version`) and its
+  project build cache does not cover `.fonts-cache/`, so every build downloads
+  the pinned sources (~35 MB) and regenerates the subsets. In practice
+  push-to-deploy stayed at ~40 s, the same range as when the subsets were
+  committed, so this is not the build's bottleneck.
 - **One builder at a time**: Cloudflare builds and deploys on every push and is
   the only environment with content credentials. A local `pnpm deploy` is a
   fallback for incidents, not a second pipeline.
@@ -251,6 +253,11 @@ Workers Builds settings (Cloudflare dashboard → Worker → Settings → Builds
   and optionally `UIVIU_CONTENT_REF` (default `main`). The build image already
   provides `git`. It is a build setting, not a runtime variable: the deployed site
   never talks to GitHub.
+- **Build cache** (`Settings > Build > Build cache`): enable it. Cloudflare caches
+  the pnpm store and `node_modules/.astro` between builds, so the install step
+  stops paying full price. It does **not** cover `.fonts-cache/` or any other
+  custom directory, so the ~35 MB font download still happens on every build.
+  Retention is 7 days after the last read, storage 10 GB per project.
 - **Deploy hook + webhook**: create a deploy hook for `main` and add it as a
   GitHub webhook on the content repository, `push` events only. A content push
   then rebuilds and deploys with no GitHub Actions minutes at all. Treat the hook
