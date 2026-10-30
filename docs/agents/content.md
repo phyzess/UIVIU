@@ -60,9 +60,11 @@ fails — the page never falls back to a stale copy in this repository.
 
 ## Slugs
 
-Slugs are lowercase with hyphens. The slug is derived from the file name and must
-stay stable: renaming a post changes its URL, so rename deliberately. Titles can
-change freely.
+Slugs are lowercase ASCII letters, digits, hyphens or Han characters. The slug is
+derived from the file name and must stay stable: renaming a post changes its URL,
+so rename deliberately. Titles can change freely. Han slugs are percent-encoded in
+the canonical URL, the sitemap and the feed (`/posts/%E9%87%8D.../`), while
+browsers, share sheets and feed readers display the characters.
 
 ## Frontmatter
 

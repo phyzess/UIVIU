@@ -86,6 +86,19 @@ function unescapeXml(value) {
     .replaceAll("&amp;", "&");
 }
 
+/**
+ * Pathname the way a reader types it. Han slugs are percent-encoded in the
+ * sitemap and the feed, so comparisons against `postPath()` must decode first.
+ */
+function requestPath(url) {
+  const { pathname } = new URL(url);
+  try {
+    return decodeURIComponent(pathname);
+  } catch {
+    return pathname;
+  }
+}
+
 /** Post id the same way the glob loader derives it: `slug` or `slug/index`. */
 function postSlug(file) {
   const relative = path.relative(POSTS_DIR, file).replaceAll("\\", "/");
@@ -124,7 +137,7 @@ expect(sitemapUrls.length > 0, "sitemap lists no URLs");
 const sitemapPaths = new Set();
 for (const url of sitemapUrls) {
   const parsed = new URL(url);
-  sitemapPaths.add(parsed.pathname);
+  sitemapPaths.add(requestPath(url));
   expect(parsed.origin === SITE_ORIGIN, `sitemap URL is not on ${SITE_ORIGIN}: ${url}`);
   expect(
     parsed.pathname !== "/search/" && !parsed.pathname.startsWith("/search/"),
@@ -161,7 +174,7 @@ const feedPaths = new Set();
 for (const match of (rssXml ?? "").matchAll(/<item>([\s\S]*?)<\/item>/g)) {
   const link = match[1].match(/<link>([^<]+)<\/link>/)?.[1];
   expect(link !== undefined, "feed item without a link");
-  if (link) feedPaths.add(new URL(unescapeXml(link)).pathname);
+  if (link) feedPaths.add(requestPath(unescapeXml(link)));
 
   const encodedRaw = match[1].match(
     /<content:encoded>([\s\S]*?)<\/content:encoded>/,
