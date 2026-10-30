@@ -182,6 +182,14 @@ describe("stageContent", () => {
     expect(() => stageContent({ from, to: tempDir() })).toThrow(/is not a directory/);
   });
 
+  it("refuses a symlinked posts/ directory", () => {
+    const from = contentRepo({ posts: { "hello.md": POST } });
+    fs.rmSync(path.join(from, "posts"), { recursive: true });
+    fs.symlinkSync(tempDir(), path.join(from, "posts"));
+
+    expect(() => stageContent({ from, to: tempDir() })).toThrow(/is a symlink/);
+  });
+
   it("refuses symlinks instead of following them", () => {
     const from = contentRepo({ posts: { "hello.md": POST } });
     fs.symlinkSync("/etc/hosts", path.join(from, "posts/link.md"));

@@ -164,8 +164,8 @@ Maple Mono and Fusion Pixel are OFL 1.1. License texts sit next to the fonts.
 `simple-git-hooks` installs `.git/hooks/pre-commit` on `pnpm install`
 (`postinstall`), running `lint-staged` with only the staged files:
 
-- `{js,mjs,cjs,ts,mts,cts,json,jsonc,css,md,yaml,yml}` → `oxlint --fix`, `oxfmt --write`
-- `*.astro` → `oxfmt --write`
+- `{js,mjs,cjs,ts,mts,cts}` → `oxlint --fix`, then `oxfmt --write`
+- `{json,jsonc,css,md,yaml,yml,astro}` → `oxfmt --write`
 
 Hooks never run a build; CI is the authority. Reinstall after cloning with
 `pnpm install` (or `pnpm simple-git-hooks`).
@@ -184,9 +184,10 @@ format check, test, build. No check may be removed or skipped to make it green.
   are test material committed here on purpose and are never deployed.
 - CI holds no content repository credentials and needs no repository secret.
 
-The three third-party actions are pinned to reviewed commit SHAs
+The four third-party actions are pinned to reviewed commit SHAs
 (`actions/checkout` v7.0.1, `pnpm/action-setup` v6.1.0, `actions/setup-node`
-v7.1.0); the tag after each SHA is only a comment. Update both together.
+v7.1.0, `actions/cache` v6.1.0); the tag after each SHA is only a comment.
+Update both together.
 
 ## Commits
 
@@ -263,7 +264,7 @@ Workers Builds settings (Cloudflare dashboard → Worker → Settings → Builds
   as `200`, Cloudflare produces a deployment within ~4 minutes. The hook URL is
   the credential; rotate it by creating a new hook and updating the webhook.
 - The Worker name must match `name` in `wrangler.jsonc` (`uiviu`).
-- Node: `.node-version` (`24`, the image's default is 24.22.1); pnpm: the
+- Node: `.node-version` (24.20.0; the image's default is 24.22.1); pnpm: the
   `packageManager` field. The image installs dependencies before the build
   command and times out at 20 minutes (this build takes 1–2).
 - `wrangler.jsonc` uses `assets.directory: "./dist"` and

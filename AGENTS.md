@@ -70,7 +70,7 @@ If copy does not fit, change the layout, measure or spacing — never the copy.
 src/
   components/   SiteHeader (nav only), SiteFooter, Hero, PostList, PostListItem,
                 PostIndexPage, Pagination, EmptyState, CategoryTag, Sidebar,
-                TableOfContents, ReadingProgress
+                TableOfContents, ReadingProgress, BrandMark
   content/      (git-ignored) staged posts/** and pages/about.md
   layouts/      BaseLayout (head, chrome, skip link), PostLayout (article, TOC)
   lib/          site.ts (brand copy), posts.ts (queries), post-utils.ts,
@@ -79,7 +79,7 @@ src/
   pages/        index, notes/[...page], archive, search, about, 404,
                 categories/[category]/[...page], posts/[...slug], rss.xml.ts
   styles/       global.css — Tailwind import, @theme tokens, .post-body typography
-  content.config.ts — posts collection schema
+  content.config.ts — posts and pages collection schemas
 scripts/        fonts.mjs (subset builder), content.mjs (private content staging)
 tests/unit/     Vitest unit tests
 tests/fixtures/content/  test-only posts and about page for public CI

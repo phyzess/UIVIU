@@ -219,11 +219,17 @@ export function stageContent({
   // A content repository starts with no posts at all, and git cannot keep an
   // empty directory: a missing posts/ means "no posts yet", not "wrong path".
   const sourcePosts = path.join(sourceDir, "posts");
+  const sourcePages = path.join(sourceDir, "pages");
   const hasPosts = fs.existsSync(sourcePosts);
   if (hasPosts && !fs.statSync(sourcePosts).isDirectory()) {
     throw new Error(`${sourcePosts} is not a directory`);
   }
-  assertAbout(path.join(sourceDir, "pages/about.md"));
+  for (const dir of [sourcePosts, sourcePages]) {
+    if (fs.existsSync(dir) && fs.lstatSync(dir).isSymbolicLink()) {
+      throw new Error(`${dir} is a symlink; the sync copies committed files only`);
+    }
+  }
+  assertAbout(path.join(sourcePages, "about.md"));
   if (hasPosts) assertUniqueSlugs(sourcePosts);
 
   fs.rmSync(targetDir, { recursive: true, force: true });
@@ -231,7 +237,7 @@ export function stageContent({
   const stagePages = path.join(targetDir, "pages");
   fs.mkdirSync(stagePosts, { recursive: true });
   const posts = hasPosts ? copyTree(sourcePosts, stagePosts, "posts") : 0;
-  const pages = copyTree(path.join(sourceDir, "pages"), stagePages, "pages");
+  const pages = copyTree(sourcePages, stagePages, "pages");
   assertAbout(path.join(stagePages, "about.md"));
 
   const marker = {

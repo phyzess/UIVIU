@@ -11,7 +11,8 @@ sample posts were removed on purpose, not by accident.
 
 Consequences while empty (all temporary, all disappear with the first post):
 
-- `astro build` prints `collection "posts" is empty`; the build still exits 0.
+- `astro build` warns that `src/content/posts/` has no matching files (or
+  does not exist); the build still exits 0.
 - Pagefind falls back to indexing whole pages, because no page carries
   `data-pagefind-body`. Search therefore returns pages instead of posts.
 - The homepage, Notes, Archive and category pages render their empty states and
