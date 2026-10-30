@@ -25,31 +25,6 @@ images) in the private content repository with the required frontmatter
 afterwards that the counts, the archive grouping and post-only search indexing
 come back.
 
-## 2. Android web app manifest
-
-Status: skipped. iOS already gets a home-screen icon through
-`public/apple-touch-icon.png`; Android would need a manifest.
-
-Next step: add `public/site.webmanifest` with `icon-512.png` (already generated),
-`theme_color: "#f8f7f2"`, `background_color: "#f8f7f2"`, `display: "standalone"`,
-`start_url: "/"`, name/short_name `UIVIU`; then link it from `BaseLayout` with
-`<link rel="manifest" href="/site.webmanifest" />`. Keep the mark rules from
-`docs/agents/design.md`.
-
-## 3. Full-text RSS
-
-Status: the feed is summary + link (`title`, `description`, `link`, `pubDate`).
-Full text was considered and deferred because it is a pipeline, not a setting:
-the Markdown body has to be rendered to HTML inside an endpoint, and relative
-links and image paths must be rewritten to absolute URLs or feed readers show
-broken links.
-
-Next step if it is ever wanted: render the entry body to an HTML string
-(`astro/container` is the official experimental route, or a markdown-it
-pipeline), rewrite site-relative `href`/`src` with `new URL(path, site)`, and
-keep the summary field for clients that prefer it. No sanitizer is required
-because the only authors are the site owners; never feed untrusted HTML into it.
-
 ## Also worth remembering
 
 - Search has no stemming for `zh-cn` (Pagefind limitation); recall is literal.

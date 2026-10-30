@@ -56,6 +56,7 @@ pnpm lint           # oxlint
 pnpm format         # oxfmt --write
 pnpm format:check   # oxfmt --check
 pnpm test           # vitest run
+pnpm assert:dist    # dist contract checks (already part of `pnpm build`)
 pnpm content:sync   # stage content: --from <path>, --fixtures or --remote
 pnpm content:status # staged source, content commit, draft count
 pnpm content:check  # fail when git tracks anything under src/content/
@@ -191,6 +192,26 @@ The four third-party actions are pinned to reviewed commit SHAs
 v7.1.0, `actions/cache` v6.1.0); the tag after each SHA is only a comment.
 Update both together.
 
+## Build-output contracts
+
+`scripts/assert-dist.mjs` runs after Pagefind, so `pnpm build`, `pnpm verify`,
+CI and Cloudflare's `pnpm build:prod` all finish with the same checks against
+the built `dist/`:
+
+- the sitemap is same-origin, duplicate-free and lists no `/search/`, no draft
+  and no 404 URL;
+- every published post appears in both the sitemap and the feed, every draft
+  appears in neither, and no `dist/posts/<slug>/` is left behind for a draft;
+- the feed description is `CONTENT_INTRO_ZH`, the channel is `zh-cn`, and every
+  item carries `content:encoded` HTML with no site-relative `href`/`src`;
+- the search page and the 404 page stay `noindex`;
+- `site.webmanifest` parses, names `UIVIU` and its 192/512 icons were deployed;
+- `robots.txt` still points at `sitemap-index.xml`.
+
+The script imports `src/lib/site.ts` directly, which relies on Node 24's
+built-in TypeScript type stripping — keep those strings in that module instead
+of copying them into JSON.
+
 ## Commits
 
 Conventional commits, one atomic commit per phase or change:
@@ -233,7 +254,9 @@ and is not committed.
 
 ## Deployment
 
-Static assets on Cloudflare Workers, deployed by **Workers Builds**. GitHub
+A pre-rendered site on Cloudflare Workers, deployed by **Workers Builds**. The
+only runtime code is the canonical-host redirect in `worker/index.ts`; every
+other request is served from `dist/` through the `ASSETS` binding. GitHub
 Actions runs checks only and never deploys. Production builds read the private
 content repository, so this public repository alone cannot publish the site.
 
@@ -252,6 +275,11 @@ Workers Builds settings (Cloudflare dashboard → Worker → Settings → Builds
   branch or PR code in an environment that can reach the private repository;
   pull requests are verified by GitHub CI with fixtures instead. Preview triggers
   keep their own variables, so the content token never reaches them either.
+- **Canonical host**: `www.uiviu.me` answers `301` to the same path and query on
+  `https://uiviu.me`; `workers.dev` previews and localhost are untouched. The
+  rule lives in code because the wrangler OAuth token only has `zone (read)` —
+  a Cloudflare Redirect Rule would need zone write. Unit tests cover the handler;
+  verify production with `curl -sI https://www.uiviu.me/about/`.
 - **Build secret** `UIVIU_CONTENT_TOKEN`: fine-grained, `Contents: read` on the
   content repository only. Plain variables: `UIVIU_CONTENT_REPO` (`owner/name`)
   and optionally `UIVIU_CONTENT_REF` (default `main`). The build image already
@@ -278,9 +306,11 @@ Workers Builds settings (Cloudflare dashboard → Worker → Settings → Builds
 - Node: `.node-version` (24.20.0; the image's default is 24.22.1); pnpm: the
   `packageManager` field. The image installs dependencies before the build
   command and times out at 20 minutes (this build takes 1–2).
-- `wrangler.jsonc` uses `assets.directory: "./dist"` and
-  `not_found_handling: "404-page"`; `compatibility_date` must not be later than
-  the installed workerd supports.
+- `wrangler.jsonc` sets `main: worker/index.ts`, `assets.directory: "./dist"`,
+  `assets.binding: "ASSETS"`, `assets.run_worker_first: true` and
+  `not_found_handling: "404-page"`. Worker-first routing is required: asset-first
+  would answer `www` from the built files before the redirect could run.
+  `compatibility_date` must not be later than the installed workerd supports.
 - Fonts: the subsets are generated inside every build and never committed, so a
   build downloads the pinned sources (~35 MB) unless the build image caches
   `.fonts-cache`.

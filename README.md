@@ -52,7 +52,8 @@ src/lib/         品牌文案、查询、分类、阅读时长与进度、搜索
 src/pages/       首页、笔记、归档、分类、搜索、关于、404、RSS
 src/styles/      Tailwind 入口、@theme token、正文排版
 src/content/     （被忽略）构建时暂存的内容
-scripts/         fonts.mjs（字体子集）、content.mjs（内容暂存）
+scripts/         fonts.mjs（字体子集）、content.mjs（内容暂存）、assert-dist.mjs（产物校验）
+worker/          www → apex 规范主机跳转（唯一的运行时脚本）
 tests/           Vitest 单元测试与内容 fixture
 docs/agents/     设计、内容、工作流与待办说明
 ```
@@ -61,7 +62,7 @@ Astro 7 · TypeScript strict · Tailwind CSS 4 · Shiki · Pagefind · @astrojs/
 
 ## 部署
 
-Cloudflare Workers Builds 负责构建与部署：推送到 `main` 触发一次构建，构建命令 `pnpm build:prod` 先从私有仓库读取内容，再交给 `npx wrangler deploy` 上传 `dist/`。私有仓库的 `push` 通过 Deploy Hook 触发同一条流水线，所以改文章不需要动这里。
+Cloudflare Workers Builds 负责构建与部署：推送到 `main` 触发一次构建，构建命令 `pnpm build:prod` 先从私有仓库读取内容，再由 `npx wrangler deploy` 上传 `dist/` 和 `worker/` 里的规范主机跳转脚本。私有仓库的 `push` 通过 Deploy Hook 触发同一条流水线，所以改文章不需要动这里。
 
 `.github/workflows/ci.yml` 只做检查（类型、lint、格式、测试、构建），不持有私有仓库凭据，也不部署。运维细节见 [工作流说明](docs/agents/workflow.md)。
 

@@ -60,6 +60,9 @@ If copy does not fit, change the layout, measure or spacing — never the copy.
   artifacts and stay untracked; only the license texts are committed.
 - No database, auth, comments, CMS backend, SSR adapter or client framework in
   this version. No analytics or tracking scripts without explicit approval.
+- The only runtime code is the canonical-host redirect in `worker/`. Do not grow
+  it into an API, SSR backend or request-time renderer; everything else is built
+  ahead of time.
 - No secrets in the repo. Anything pushed here is meant to be public.
 - Every new dependency needs a stated purpose; prefer platform features.
 - Commands must actually be run. "The script exists" is not verification.
@@ -75,26 +78,29 @@ src/
   layouts/      BaseLayout (head, chrome, skip link), PostLayout (article, TOC)
   lib/          site.ts (brand copy), posts.ts (queries), post-utils.ts,
                 taxonomy.ts (categories, counts), reading-time.ts,
-                reading-progress.ts, search.ts
+                reading-progress.ts, search.ts, feed.ts (feed HTML rewriting)
   pages/        index, notes/[...page], archive, search, about, 404,
                 categories/[category]/[...page], posts/[...slug], rss.xml.ts
   styles/       global.css — Tailwind import, @theme tokens, .post-body typography
   content.config.ts — posts and pages collection schemas
-scripts/        fonts.mjs (subset builder), content.mjs (private content staging)
+scripts/        fonts.mjs (subset builder), content.mjs (content staging),
+                assert-dist.mjs (build-output contracts)
 tests/unit/     Vitest unit tests
 tests/fixtures/content/  test-only posts and about page for public CI
 docs/agents/    Agent-facing documentation
-wrangler.jsonc  Cloudflare Workers static assets config (dist/, 404-page)
+worker/         canonical-host redirect (www → apex); the only runtime code
+wrangler.jsonc  Workers assets, custom domains and the redirect entrypoint
 public/         favicon.svg (mark source), favicon.ico, apple-touch-icon.png,
-                icon-512.png, og.png, brand/uiviu-wordmark.svg; fonts/ holds the
-                generated subsets (git-ignored) plus the committed LICENSE texts
+                icon-192.png, icon-512.png, site.webmanifest, og.png,
+                brand/uiviu-wordmark.svg; fonts/ holds the generated subsets
+                (git-ignored) plus the committed LICENSE texts
 ```
 
 ## Commands
 
 ```bash
 pnpm dev             # dev server; Astro 7 can run it in the background
-pnpm build           # astro build → dist/
+pnpm build           # astro build → dist/, Pagefind, then dist contract checks
 pnpm preview         # preview the build (astro preview)
 pnpm preview:worker  # preview through wrangler dev (Workers assets)
 pnpm check           # astro check (types + template diagnostics)
@@ -102,6 +108,7 @@ pnpm lint            # oxlint
 pnpm format          # oxfmt --write
 pnpm format:check    # oxfmt --check
 pnpm test            # vitest run
+pnpm assert:dist     # build-output contracts (auto at the end of `pnpm build`)
 pnpm fonts:ensure    # generate subsets when src/ needs glyphs (auto in dev/build)
 pnpm fonts:build     # force a regeneration
 pnpm fonts:check     # fail when the generated subsets miss glyphs from src/
@@ -132,6 +139,8 @@ QA):
 | 6     | Cloudflare Workers static assets config and docs        | done   |
 | 7     | Final QA and delivery                                   | done   |
 | 8     | Public code / private content split, staging, fixtures  | done   |
+| 9     | Canonical-host redirect, manifest, full-text RSS,       | done   |
+|       | build-output contracts                                  |        |
 
 ## Notes for agents
 

@@ -110,6 +110,15 @@ committed as `draft: true` without publishing anything: only a build that sees
 `draft: false` can ship it. Published pages are public the moment they deploy, so
 anything that must stay private after publishing does not belong in a post at all.
 
+## Feed
+
+`/rss.xml` is full text. Each item keeps the summary in `description` and adds
+the rendered body as `content:encoded`; internal `href`, `src` and `srcset`
+values are rewritten to absolute URLs so readers do not resolve them against
+their own origin. Images follow the same size rules as the page. Drafts never
+enter the feed. There is no sanitizer because the only authors are the site
+owners; never feed untrusted HTML into the endpoint.
+
 ## Writing standard
 
 - Markdown only: headings, lists, quotes, tables, links, images, fenced code.

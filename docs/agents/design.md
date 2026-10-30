@@ -185,10 +185,13 @@ SVG anywhere.
 - `src/components/BrandMark.astro` inlines the same geometry so pages can size
   it; `tests/unit/brand-mark.test.ts` fails if the two drift apart.
 - `public/favicon.ico` carries 16/32/48 (transparent); `apple-touch-icon.png`
-  (180) and `icon-512.png` are paper-backed tiles because iOS and Android
-  composite transparency as black.
+  (180), `icon-192.png` and `icon-512.png` are paper-backed tiles because iOS
+  and Android composite transparency as black.
 - `public/og.png` is the 1200×630 share card (mark, wordmark, headline,
   subtitle, domain).
+- `public/site.webmanifest` (linked once in `BaseLayout`, with the 192 and 512
+  icons) is what gives Android a home-screen entry; `theme_color` and
+  `background_color` stay paper `#f8f7f2`.
 
 Usage is deliberately narrow: favicon, the 404 field note (32px), and empty
 states (28px). Do not put the mark or the wordmark in the hero, the header, the
@@ -203,7 +206,8 @@ is accepted and documented rather than solved with a paper block.
 
 ## Known gaps
 
-- No Android web app manifest; `icon-512.png` is ready if one is added.
+- Pagefind does not stem `zh-cn`, so search recall is literal (see
+  `workflow.md`).
 
 ## Overflow rules
 
