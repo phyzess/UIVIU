@@ -29,8 +29,10 @@ const OUT = path.join(ROOT, "public/fonts");
 const MANIFEST = path.join(OUT, "ui-charset.json");
 const SPECIMEN_FREE = true; // the specimen page is gone; scan everything in src/
 // A draft is private and never renders; its characters must not reach the
-// committed subsets (public/fonts/ui-charset.json is public).
-const DRAFT = /^draft:\s*true\s*$/m;
+// committed subsets (public/fonts/ui-charset.json is public). Only frontmatter
+// decides: a published post may quote "draft: true" in its body.
+const FRONTMATTER_BLOCK = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
+const DRAFT_FLAG = /^draft:\s*true\s*$/m;
 
 const SOURCES = {
   kai: {
@@ -99,7 +101,7 @@ function requiredChars() {
   for (const file of walk(path.join(ROOT, "src"))) {
     if (SPECIMEN_FREE === false && file.endsWith("type-specimen.astro")) continue;
     const text = fs.readFileSync(file, "utf8");
-    if (DRAFT.test(text)) continue;
+    if (DRAFT_FLAG.test(FRONTMATTER_BLOCK.exec(text)?.[1] ?? "")) continue;
     for (const char of text) {
       const code = char.codePointAt(0);
       if (

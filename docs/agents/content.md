@@ -21,7 +21,9 @@ pages/about.md          # the about page, rendered at /about/
 Both post layouts produce the same id and URL, `/posts/<slug>/`: the glob loader
 strips a trailing `index`, so moving a post into its own folder to add images
 never changes a URL. Never keep `posts/<slug>.md` and `posts/<slug>/index.md`
-for the same slug — Astro reports a duplicate id.
+for the same slug: the sync refuses it. Astro itself only warns and silently
+keeps one of the two, so the staging step fails instead of shipping the wrong
+file.
 
 `scripts/content.mjs` copies exactly `posts/` and `pages/` into the git-ignored
 `src/content/` before a build. Everything under that path is staged build input,

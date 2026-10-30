@@ -119,15 +119,18 @@ are generated, renamed and checked by one script:
   `public/fonts/ui-charset.json`; rebuild only when something is missing. It runs
   after content staging in `pnpm dev`, `pnpm build` and `pnpm verify`, so a new
   post (or new interface copy) rebuilds the subsets automatically and the build
-  keeps going. It prints how many glyphs were added and reminds you to commit the
-  regenerated files if you want offline builds.
-- Drafts are skipped: `draft: true` files contribute no glyphs, so a private
-  draft cannot leak characters into the public `ui-charset.json` or subsets.
+  keeps going. With real private content staged the rebuild rewrites
+  `public/fonts/*` in the working tree: that is expected, and the rewrite is
+  normally **not** committed — see `backlog.md` item 4.
+- Drafts are skipped: the scan reads the frontmatter only, so a private draft
+  cannot leak characters into the public `ui-charset.json` or subsets, while a
+  published post may still quote `draft: true` in a code block.
 - All four fonts — including the pixel face — derive their character set from the
   same scan, so expanding what the pixel font renders needs no list to maintain.
 - `pnpm fonts:build` — force a rebuild.
-- `pnpm fonts:check` — strict audit that fails instead of rebuilding, useful in
-  review to see whether the committed subsets are current.
+- `pnpm fonts:check` — strict audit that fails instead of rebuilding. With the
+  private content staged it reports the content's own new glyphs, which is
+  expected: the committed subsets only guarantee what the fixtures need.
 
 Sources are pinned release files downloaded with Node's `fetch` into
 `.fonts-cache/` (git ignored, cached in CI by `.github/workflows/ci.yml`); the
@@ -173,9 +176,9 @@ Hooks never run a build; CI is the authority. Reinstall after cloning with
 install with `--frozen-lockfile`, stage the test fixtures, then check, lint,
 format check, test, build. No check may be removed or skipped to make it green.
 
-- `pnpm content:check` runs first and fails if git tracks anything under
-  `src/content/`: writing may only exist in the private repository, and this is
-  what keeps a stray `git add` from publishing it.
+- `pnpm content:check` runs after the install and fails if git tracks anything
+  under `src/content/`: writing may only exist in the private repository, and
+  this is what keeps a stray `git add` from publishing it.
 - `pnpm content:sync:fixtures` supplies `tests/fixtures/content/`, so templates,
   types and the build stay covered without the private repository. The fixtures
   are test material committed here on purpose and are never deployed.
@@ -237,9 +240,11 @@ Workers Builds settings (Cloudflare dashboard → Worker → Settings → Builds
 | Preview command   | `npx wrangler preview` |
 | Root directory    | repository root        |
 
-- **Preview Builds stay off.** A preview build would run branch or PR code in an
-  environment that can read the private repository. Pull requests are verified by
-  GitHub CI with fixtures instead.
+- **Preview builds stay off.** The control is `Builds for Preview branches` on
+  the Previews Base tab, not a production setting. A preview build would run
+  branch or PR code in an environment that can reach the private repository;
+  pull requests are verified by GitHub CI with fixtures instead. Preview triggers
+  keep their own variables, so the content token never reaches them either.
 - **Build secret** `UIVIU_CONTENT_TOKEN`: fine-grained, `Contents: read` on the
   content repository only. Plain variables: `UIVIU_CONTENT_REPO` (`owner/name`)
   and optionally `UIVIU_CONTENT_REF` (default `main`). The build image already
@@ -286,10 +291,10 @@ content came from nowhere.
    from leaking, it does not make the past private.
 2. Land the public staging code while the old `src/content/pages/about.md` is
    still in place, so the current build command keeps working.
-3. In Cloudflare: disable Preview Builds, add the token and the repository
-   variables, switch the build command to `pnpm build:prod`, and run one manual
-   build. Confirm `/about/` renders the private copy and that an unreadable
-   content repository fails the build.
+3. In Cloudflare: turn off `Builds for Preview branches` (Previews Base tab), add
+   the token and the repository variables, switch the build command to
+   `pnpm build:prod`, and run one manual build. Confirm `/about/` renders the
+   private copy and that an unreadable content repository fails the build.
 4. Remove `src/content/pages/about.md` from this repository; `pnpm content:check`
    keeps it out from then on.
 5. Create the deploy hook and the webhook, push a small about-page edit, and

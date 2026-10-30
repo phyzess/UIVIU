@@ -105,6 +105,28 @@ describe("stageContent", () => {
     expect(fs.existsSync(path.join(to, ".source.json"))).toBe(true);
   });
 
+  it("stages a bundle post with its assets", () => {
+    const from = contentRepo({
+      posts: { "bundle/index.md": POST, "bundle/photo.png": "png" },
+    });
+    const to = tempDir();
+
+    const marker = stageContent({ from, to });
+
+    expect(marker.posts).toBe(1);
+    expect(marker.files.posts).toBe(2);
+    expect(fs.existsSync(path.join(to, "posts", "bundle", "index.md"))).toBe(true);
+    expect(fs.existsSync(path.join(to, "posts", "bundle", "photo.png"))).toBe(true);
+  });
+
+  it("rejects two layouts that resolve to the same slug", () => {
+    const from = contentRepo({
+      posts: { "dup.md": POST, "dup/index.md": POST },
+    });
+
+    expect(() => stageContent({ from, to: tempDir() })).toThrow(/share the slug "dup"/);
+  });
+
   it("removes content a previous sync left behind", () => {
     const from = contentRepo({ posts: { "hello.md": POST } });
     const to = tempDir();

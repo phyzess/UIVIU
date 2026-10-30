@@ -17,11 +17,12 @@ Consequences while empty (all temporary, all disappear with the first post):
 - The homepage, Notes, Archive and category pages render their empty states and
   the sidebar shows 0/0/0.
 
-Next step: add `posts/<slug>.md` in the private content repository with the
-required frontmatter (`title`, `description`, `pubDate`, `category`, `draft`) and
-stage it with `pnpm content:sync --from <path>`. See `docs/agents/content.md`.
-Verify afterwards that the counts, the archive grouping and post-only search
-indexing come back.
+Next step: add `posts/<slug>.md` (or `posts/<slug>/index.md` when it has
+images) in the private content repository with the required frontmatter
+(`title`, `description`, `pubDate`, `category`, `draft`) and stage it with
+`pnpm content:sync --from <path>`. See `docs/agents/content.md`. Verify
+afterwards that the counts, the archive grouping and post-only search indexing
+come back.
 
 ## 2. Android web app manifest
 

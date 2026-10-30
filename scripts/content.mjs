@@ -117,6 +117,44 @@ function copyTree(from, to, label) {
   return files;
 }
 
+/** Astro's id for a post file: `x.md` and `x/index.md` both resolve to `x`. */
+function postId(file, base) {
+  const relative = path.relative(base, file).split(path.sep).join("/");
+  return relative
+    .replace(POST_FILE, "")
+    .replace(/(^|\/)index$/, "")
+    .toLowerCase();
+}
+
+/**
+ * Astro only warns when two files resolve to the same slug and silently keeps
+ * one, so a leftover `x.md` next to an edited `x/index.md` would ship the wrong
+ * text. Fail the sync instead.
+ */
+function assertUniqueSlugs(dir) {
+  const seen = new Map();
+  const walk = (current) => {
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      const full = path.join(current, entry.name);
+      if (entry.isDirectory()) {
+        walk(full);
+        continue;
+      }
+      if (!entry.isFile() || !POST_FILE.test(entry.name)) continue;
+      const id = postId(full, dir);
+      const previous = seen.get(id);
+      if (previous) {
+        throw new Error(
+          `posts/${path.relative(dir, previous)} and posts/${path.relative(dir, full)} ` +
+            `share the slug "${id}"; keep one layout per post`,
+        );
+      }
+      seen.set(id, full);
+    }
+  };
+  walk(dir);
+}
+
 function count(dir, match) {
   let total = 0;
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -132,10 +170,11 @@ function countPosts(dir) {
 }
 
 function countDrafts(dir) {
-  return count(
-    dir,
-    (file) => POST_FILE.test(file) && DRAFT.test(fs.readFileSync(file, "utf8")),
-  );
+  return count(dir, (file) => {
+    if (!POST_FILE.test(file)) return false;
+    const text = fs.readFileSync(file, "utf8");
+    return DRAFT.test(FRONTMATTER.exec(text)?.[1] ?? "");
+  });
 }
 
 /** The about page is required by `/about/`; fail before the render does. */
@@ -185,6 +224,7 @@ export function stageContent({
     throw new Error(`${sourcePosts} is not a directory`);
   }
   assertAbout(path.join(sourceDir, "pages/about.md"));
+  if (hasPosts) assertUniqueSlugs(sourcePosts);
 
   fs.rmSync(targetDir, { recursive: true, force: true });
   const stagePosts = path.join(targetDir, "posts");

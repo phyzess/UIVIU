@@ -69,7 +69,7 @@ src/
   components/   SiteHeader (nav only), SiteFooter, Hero, PostList, PostListItem,
                 PostIndexPage, Pagination, EmptyState, CategoryTag, Sidebar,
                 TableOfContents, ReadingProgress
-  content/      (git-ignored) staged posts/*.md, post images and pages/about.md
+  content/      (git-ignored) staged posts/** and pages/about.md
   layouts/      BaseLayout (head, chrome, skip link), PostLayout (article, TOC)
   lib/          site.ts (brand copy), posts.ts (queries), post-utils.ts,
                 taxonomy.ts (categories, counts), reading-time.ts,
