@@ -9,8 +9,10 @@
 export const SITE_NAME = "UIVIU";
 
 /**
- * English headline. Not rendered on the homepage (the Chinese slogan is the only
- * hero statement); the feed description and the share-card alt text use it.
+ * English headline. Kept verbatim as a brand asset and guarded by
+ * `tests/unit/site.test.ts`, but currently rendered nowhere: the hero, the feed
+ * description and the share-card alt text are Chinese. Do not shorten or
+ * translate it.
  */
 export const BRAND_HEADLINE_EN =
   "A Rigorous Derivation of Something Entirely Useless, Yet Perfectly Symmetrical.";

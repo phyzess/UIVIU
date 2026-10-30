@@ -117,10 +117,10 @@ decorative rule sits under it; the post list follows after plain whitespace.
 
 The hero carries no English copy, no content introduction and no directions.
 `LIFE · THOUGHTS · CODE` lives only in the footer. The English headline remains
-in `site.ts` for the feed description and the share-card alt text, but it is not
-rendered on the page. Never swap the slogan with the content introduction, never
-move it into the footer or the about page, and never shorten it to fit: fix the
-measure, wrapping or spacing instead.
+in `site.ts` as a guarded brand asset, but nothing renders it: the feed
+description and the share-card alt text are Chinese. Never swap the slogan with
+the content introduction, never move it into the footer or the about page, and
+never shorten it to fit: fix the measure, wrapping or spacing instead.
 
 ## Homepage layout
 

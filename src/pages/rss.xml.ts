@@ -2,7 +2,7 @@ import rss from "@astrojs/rss";
 import type { APIContext } from "astro";
 
 import { getPublishedPosts, postPath } from "../lib/posts";
-import { BRAND_HEADLINE_EN, CONTENT_INTRO_ZH, SITE_NAME } from "../lib/site";
+import { CONTENT_INTRO_ZH, SITE_NAME } from "../lib/site";
 
 export async function GET(context: APIContext) {
   if (!context.site) {
@@ -15,7 +15,7 @@ export async function GET(context: APIContext) {
 
   return rss({
     title: SITE_NAME,
-    description: `${BRAND_HEADLINE_EN} ${CONTENT_INTRO_ZH}`,
+    description: CONTENT_INTRO_ZH,
     site: context.site,
     items: posts.map((post) => ({
       title: post.data.title,
