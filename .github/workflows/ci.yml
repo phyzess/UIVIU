@@ -31,6 +31,8 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
 
+      # The subsets are generated per run (they are not committed); caching the
+      # sources avoids re-downloading ~35 MB.
       - name: Cache font sources
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -61,8 +63,7 @@ jobs:
       - name: Check formatting
         run: pnpm format:check
 
-      # Rebuilds the subsets only when new copy needs glyphs; the cache above
-      # keeps that offline in most runs.
+      # Builds the subsets from the cached sources; they are not committed.
       - name: Font subsets
         run: pnpm fonts:ensure
 

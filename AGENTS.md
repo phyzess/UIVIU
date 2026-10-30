@@ -56,6 +56,8 @@ If copy does not fit, change the layout, measure or spacing — never the copy.
 - Media follows the post: images live in the post folder in the private
   repository, and video is embedded (click-to-load) instead of committed. See
   `docs/agents/content.md` for the size rules.
+- Font subsets (`public/fonts/*.woff2`, `ui-charset.json`) are generated build
+  artifacts and stay untracked; only the license texts are committed.
 - No database, auth, comments, CMS backend, SSR adapter or client framework in
   this version. No analytics or tracking scripts without explicit approval.
 - No secrets in the repo. Anything pushed here is meant to be public.
@@ -84,7 +86,8 @@ tests/fixtures/content/  test-only posts and about page for public CI
 docs/agents/    Agent-facing documentation
 wrangler.jsonc  Cloudflare Workers static assets config (dist/, 404-page)
 public/         favicon.svg (mark source), favicon.ico, apple-touch-icon.png,
-                icon-512.png, og.png, brand/uiviu-wordmark.svg
+                icon-512.png, og.png, brand/uiviu-wordmark.svg; fonts/ holds the
+                generated subsets (git-ignored) plus the committed LICENSE texts
 ```
 
 ## Commands
@@ -99,9 +102,9 @@ pnpm lint            # oxlint
 pnpm format          # oxfmt --write
 pnpm format:check    # oxfmt --check
 pnpm test            # vitest run
-pnpm fonts:ensure    # rebuild subsets only when src/ needs new glyphs (auto in dev/build)
-pnpm fonts:build     # force a rebuild
-pnpm fonts:check     # strict audit that fails instead of rebuilding
+pnpm fonts:ensure    # generate subsets when src/ needs glyphs (auto in dev/build)
+pnpm fonts:build     # force a regeneration
+pnpm fonts:check     # fail when the generated subsets miss glyphs from src/
 pnpm content:sync    # stage content: --from <path>, --fixtures or --remote
 pnpm content:status  # what a build would see
 pnpm content:check   # fail when git tracks anything under src/content/

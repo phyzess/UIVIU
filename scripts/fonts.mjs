@@ -29,8 +29,8 @@ const OUT = path.join(ROOT, "public/fonts");
 const MANIFEST = path.join(OUT, "ui-charset.json");
 const SPECIMEN_FREE = true; // the specimen page is gone; scan everything in src/
 // A draft is private and never renders; its characters must not reach the
-// committed subsets (public/fonts/ui-charset.json is public). Only frontmatter
-// decides: a published post may quote "draft: true" in its body.
+// generated subsets, which are served publicly. Only frontmatter decides: a
+// published post may quote "draft: true" in its body.
 const FRONTMATTER_BLOCK = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
 const DRAFT_FLAG = /^draft:\s*true\s*$/m;
 
@@ -176,8 +176,9 @@ async function download(url, label) {
   } catch (error) {
     throw new Error(
       `fonts: could not download ${label} (${error instanceof Error ? error.message : String(error)}).\n` +
-        "A build without network access cannot create new glyphs: run `pnpm fonts:build` " +
-        "on a machine with network, then commit public/fonts/*.",
+        "The subsets are generated per build, so a build without network access cannot " +
+        "create them: warm .fonts-cache/ first (run `pnpm fonts:ensure` on a machine " +
+        "with network) or provide the cache in the build environment.",
       { cause: error },
     );
   }
@@ -430,7 +431,7 @@ function check() {
   const manifest = readManifest();
   if (!manifest) {
     console.error(
-      "fonts:check: missing public/fonts/ui-charset.json — run `pnpm fonts:build`",
+      "fonts:check: missing public/fonts/ui-charset.json — run `pnpm fonts:ensure`",
     );
     process.exit(1);
   }
@@ -470,7 +471,7 @@ async function ensure() {
   );
   await build();
   console.log(
-    "fonts: subsets rebuilt — commit public/fonts/* if you want builds to stay offline",
+    "fonts: subsets rebuilt in public/fonts/ (generated build output, not committed)",
   );
 }
 

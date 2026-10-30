@@ -49,20 +49,13 @@ pipeline), rewrite site-relative `href`/`src` with `new URL(path, site)`, and
 keep the summary field for clients that prefer it. No sanitizer is required
 because the only authors are the site owners; never feed untrusted HTML into it.
 
-## 4. Content-derived font subsets
-
-Status: `public/fonts/*` are built from the characters found in staged content, so
-a build that sees a new glyph rebuilds them. Committing a rebuild publishes the
-character set of the private writing (the subset itself still leaks nothing but
-which characters appear). Current policy: let builds regenerate the subsets and
-do not commit them; only commit when a fixed offline build is worth more than
-that small disclosure.
-
 ## Also worth remembering
 
 - Search has no stemming for `zh-cn` (Pagefind limitation); recall is literal.
 - Local Node may be newer than `.node-version`; before a release run
   `mise exec node@24.20.0 -- pnpm verify` (see `workflow.md`).
+- Font subsets are generated per build and git-ignored, so a fresh clone or a
+  Cloudflare build needs network access for the pinned sources once.
 - The public history still contains the pre-split about page. It was public by
   design before the split; removing it now stops future edits from leaking, it
   does not make the old text secret.

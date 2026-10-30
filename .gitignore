@@ -14,6 +14,10 @@ node_modules/
 # full font sources used by scripts/fonts.mjs
 .fonts-cache/
 
+# generated font subsets (scripts/fonts.mjs); the licence texts stay tracked
+/public/fonts/*.woff2
+/public/fonts/ui-charset.json
+
 # logs
 npm-debug.log*
 yarn-debug.log*

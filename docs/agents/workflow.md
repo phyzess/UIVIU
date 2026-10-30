@@ -48,7 +48,7 @@ mise exec node@24.20.0 -- pnpm verify
 ```bash
 pnpm dev            # foreground dev server
 pnpm build          # astro build → dist/, then Pagefind indexes dist/
-pnpm build:astro    # Astro build only, no search index
+pnpm build:astro    # Astro build only, no search index (fonts must exist)
 pnpm search:index   # Pagefind over dist/ (used by `pnpm build`)
 pnpm preview        # serve dist/
 pnpm check          # astro check
@@ -60,9 +60,9 @@ pnpm content:sync   # stage content: --from <path>, --fixtures or --remote
 pnpm content:status # staged source, content commit, draft count
 pnpm content:check  # fail when git tracks anything under src/content/
 pnpm build:prod     # content:sync:remote → build (Cloudflare build command)
-pnpm fonts:check    # assert every source glyph is in the font subsets
-pnpm fonts:build    # rebuild the subsets (needs network or .fonts-cache/)
-pnpm verify         # check, lint, format:check, fonts:check, test, build
+pnpm fonts:check    # fail if the generated subsets miss glyphs from src/
+pnpm fonts:build    # force a regeneration (needs network or .fonts-cache/)
+pnpm verify         # fonts:ensure, check, lint, format:check, test, build
 ```
 
 Astro 7 adds a detached dev server:
@@ -111,26 +111,27 @@ file counts) and printed by `pnpm content:status`.
 
 ## Fonts
 
-Four subsets ship with the site (`public/fonts/uiviu-*.woff2`): Kai (headings),
-Hei (body/UI), Meta (dates/labels/code) and Pixel (the `404` digits only). They
-are generated, renamed and checked by one script:
+Four subsets ship with the site (`/fonts/uiviu-*.woff2`): Kai (headings), Hei
+(body/UI), Meta (dates/labels/code) and Pixel (the `404` digits only). They are
+**generated build artifacts**: `scripts/fonts.mjs` writes them into
+`public/fonts/`, which is git-ignored except for the license texts and its
+README. Nothing about them is committed, so the repository never discloses the
+character set of the writing.
 
-- `pnpm fonts:ensure` — compare the characters used by `src/` with
-  `public/fonts/ui-charset.json`; rebuild only when something is missing. It runs
-  after content staging in `pnpm dev`, `pnpm build` and `pnpm verify`, so a new
-  post (or new interface copy) rebuilds the subsets automatically and the build
-  keeps going. With real private content staged the rebuild rewrites
-  `public/fonts/*` in the working tree: that is expected, and the rewrite is
-  normally **not** committed — see `backlog.md` item 4.
+- `pnpm fonts:ensure` — scan `src/` and compare with
+  `public/fonts/ui-charset.json`, generating the subsets when the manifest or a
+  font file is missing. It runs after content staging in `pnpm dev`,
+  `pnpm build` and `pnpm verify`, so adding copy is enough. A fresh clone has no
+  manifest, so its first run generates everything.
 - Drafts are skipped: the scan reads the frontmatter only, so a private draft
   cannot leak characters into the public `ui-charset.json` or subsets, while a
   published post may still quote `draft: true` in a code block.
 - All four fonts — including the pixel face — derive their character set from the
   same scan, so expanding what the pixel font renders needs no list to maintain.
 - `pnpm fonts:build` — force a rebuild.
-- `pnpm fonts:check` — strict audit that fails instead of rebuilding. With the
-  private content staged it reports the content's own new glyphs, which is
-  expected: the committed subsets only guarantee what the fixtures need.
+- `pnpm fonts:check` — strict audit that fails instead of generating: it reports
+  characters the current subsets do not cover, or missing font files. Use it to
+  confirm a built tree really covers the staged content.
 
 Sources are pinned release files downloaded with Node's `fetch` into
 `.fonts-cache/` (git ignored, cached in CI by `.github/workflows/ci.yml`); the
@@ -143,13 +144,12 @@ copyright/license records and compresses with `fontverter`.
 
 ### Build environments
 
-- **GitHub Actions** (`.github/workflows/ci.yml`): network plus the
-  `.fonts-cache` cache step; a rebuild only downloads when glyphs actually
-  change.
+- **GitHub Actions** (`.github/workflows/ci.yml`): the sources are cached, and
+  the subsets are regenerated on every run — fast once the cache is warm.
 - **Cloudflare Workers Builds**: the font step needs no system binaries, but the
-  build image must run Node 24 (`NODE_VERSION=24`), and there is no
-  `.fonts-cache` cache, so a rebuild downloads ~35 MB once. Committing the
-  regenerated subsets after adding content keeps that path network-free.
+  build image must run Node 24 (`NODE_VERSION=24`) and has no `.fonts-cache`, so
+  every build downloads the pinned sources (~35 MB) and regenerates the
+  subsets — roughly 10 seconds on top of the build.
 - **One builder at a time**: Cloudflare builds and deploys on every push and is
   the only environment with content credentials. A local `pnpm deploy` is a
   fallback for incidents, not a second pipeline.
@@ -269,10 +269,9 @@ Workers Builds settings (Cloudflare dashboard → Worker → Settings → Builds
 - `wrangler.jsonc` uses `assets.directory: "./dist"` and
   `not_found_handling: "404-page"`; `compatibility_date` must not be later than
   the installed workerd supports.
-- Fonts: content glyphs arrive with the private content, so a build that needs new
-  ones runs `fonts:ensure` inside the build (one ~35 MB download without
-  `.fonts-cache`). Committing subsets regenerated from private content publishes
-  that character set — decide that deliberately.
+- Fonts: the subsets are generated inside every build and never committed, so a
+  build downloads the pinned sources (~35 MB) unless the build image caches
+  `.fonts-cache`.
 - Rollback: every production deploy creates a Worker version; redeploy a previous
   one (Worker → Deployments → rollback), then fix the content or the credentials
   before rebuilding.
