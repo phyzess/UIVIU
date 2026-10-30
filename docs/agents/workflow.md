@@ -205,6 +205,8 @@ the built `dist/`:
 - the feed description is `CONTENT_INTRO_ZH`, the channel is `zh-cn`, and every
   item carries `content:encoded` HTML with no site-relative `href`/`src`;
 - the search page and the 404 page stay `noindex`;
+- the homepage's `og:image`, `og:image:alt` and canonical point at the apex
+  share card, and `og.png` was deployed;
 - `site.webmanifest` parses, names `UIVIU` and its 192/512 icons were deployed;
 - `robots.txt` still points at `sitemap-index.xml`.
 

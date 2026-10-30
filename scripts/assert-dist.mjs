@@ -9,6 +9,7 @@
  * - the sitemap lists only canonical, indexable pages (never `/search/`, never
  *   drafts, never the 404 page);
  * - the feed describes itself in Chinese and links exactly the published posts;
+ * - the homepage carries an absolute share card and `og.png` is deployed;
  * - drafts have no route, no feed entry and no sitemap entry;
  * - the search page and the 404 page stay `noindex`;
  * - the web app manifest and its icons are actually deployed;
@@ -202,7 +203,24 @@ for (const file of postFiles) {
   }
 }
 
-// --- noindex, manifest, robots --------------------------------------------
+// --- metadata, noindex, manifest, robots ----------------------------------
+
+const homeHtml = await readText(path.join(DIST, "index.html"));
+expect(homeHtml !== null, "dist/index.html is missing");
+expect(
+  homeHtml?.includes(`<meta property="og:image" content="${SITE_ORIGIN}/og.png">`) ??
+    false,
+  "homepage og:image is not the absolute share card",
+);
+expect(
+  homeHtml?.includes('property="og:image:alt"') ?? false,
+  "homepage is missing og:image:alt",
+);
+expect(
+  homeHtml?.includes(`<link rel="canonical" href="${SITE_ORIGIN}/">`) ?? false,
+  "homepage canonical is not the apex",
+);
+expect(await exists(path.join(DIST, "og.png")), "dist/og.png was not deployed");
 
 const searchHtml = await readText(path.join(DIST, "search/index.html"));
 expect(searchHtml !== null, "dist/search/index.html is missing");
